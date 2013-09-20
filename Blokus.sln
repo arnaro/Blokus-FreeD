@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blokus", "Blokus\Blokus.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlokusInterface", "BlokusInterface\BlokusInterface.csproj", "{491D7435-2C8D-4E15-B94A-1B34D09913A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlokusTestPlayer", "BlokusTestPlayer\BlokusTestPlayer.csproj", "{E13758BF-0D9A-4C1C-ADD3-B9B4D46F3375}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{491D7435-2C8D-4E15-B94A-1B34D09913A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{491D7435-2C8D-4E15-B94A-1B34D09913A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{491D7435-2C8D-4E15-B94A-1B34D09913A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E13758BF-0D9A-4C1C-ADD3-B9B4D46F3375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E13758BF-0D9A-4C1C-ADD3-B9B4D46F3375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E13758BF-0D9A-4C1C-ADD3-B9B4D46F3375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E13758BF-0D9A-4C1C-ADD3-B9B4D46F3375}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

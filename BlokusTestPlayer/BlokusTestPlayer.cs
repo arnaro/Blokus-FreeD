@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Blokus;
 
-namespace Blokus.Players
+namespace BlokusTestPlayer
 {
-    class BlokusTestPlayer : IBlokusPlayer
+    public class BlokusTestPlayer : IBlokusPlayer
     {
-        private int playerid;
+        public string Name { get; set; }
+        public int Id { get; set; }
+
         public BlokusGameState PlayRound(BlokusGameState gamestate)
         {
             return gamestate;
         }
         public void Initialize(int playernumber)
         {
-            playerid = playernumber;
+            Id = playernumber;
         }
     }
 }
