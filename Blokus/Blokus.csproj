@@ -48,7 +48,6 @@
     <Compile Include="BlockTests.cs" />
     <Compile Include="Model\Piece.cs" />
     <Compile Include="BlokusGame.cs" />
-    <Compile Include="Model\Block.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
