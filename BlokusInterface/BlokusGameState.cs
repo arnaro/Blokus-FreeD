@@ -9,7 +9,6 @@ namespace Blokus
     {
         public byte[] BlokusBoard { get; set; }
 
-        List<object> AvailableBloks { get; set; } 
-
+        List<IPiece> AvailablePieces { get; set; } 
     }
 }

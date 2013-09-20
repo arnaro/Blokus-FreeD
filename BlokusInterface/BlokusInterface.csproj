@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="BlokusGameState.cs" />
     <Compile Include="BlokusPlayer.cs" />
+    <Compile Include="IPiece.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Blokus.Model
 {
-    class Block
+    class Piece : IPiece
     {
         protected byte[,] baseForm;
         private int size;
 
-        public Block(byte[,] matrix)
+        public Piece(byte[,] matrix)
         {
             baseForm = matrix;
             size = (int) Math.Sqrt(baseForm.Length);
@@ -65,6 +65,20 @@ namespace Blokus.Model
                 }
             }
             return ret;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < size; ++i)
+            {
+                for (int j = 0; j < size; ++j)
+                {
+                    stringBuilder.Append(baseForm[i, j] == 1 ? "X" : " ");
+                }
+                stringBuilder.Append(Environment.NewLine);
+            }
+            return stringBuilder.ToString();
         }
     }
 }

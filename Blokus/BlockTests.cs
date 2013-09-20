@@ -17,8 +17,8 @@ namespace Blokus
             var basicForm = new byte[1,1];
             basicForm[0,0] = 1;
 
-            Block block = new Block(basicForm);
-            Assert.AreEqual(8,block.ListRoations().Count);
+            Piece piece = new Piece(basicForm);
+            Assert.AreEqual(8,piece.ListRoations().Count);
 
             basicForm = new byte[2,2]
                 {
@@ -31,8 +31,8 @@ namespace Blokus
                     {0, 1}
                 };
 
-            block = new Block(basicForm);
-            Assert.AreEqual(Form2, block.ListRoations()[1]);
+            piece = new Piece(basicForm);
+            Assert.AreEqual(Form2, piece.ListRoations()[1]);
 
             var bigBaseForm = new byte[4, 4]
                 {
@@ -48,8 +48,24 @@ namespace Blokus
                     {0, 0, 1, 0},
                     {0, 0, 1, 0},
                 };
-            block = new Block(bigBaseForm);
-            Assert.AreEqual(formFlip, block.ListRoations()[4]);
+            piece = new Piece(bigBaseForm);
+            Assert.AreEqual(formFlip, piece.ListRoations()[4]);
+        }
+
+        [Test]
+        public void PieceToStringTest()
+        {
+            var bigBaseForm = new byte[4, 4]
+                {
+                    {0, 0, 1, 0},
+                    {0, 1, 1, 0},
+                    {0, 1, 0, 0},
+                    {0, 1, 0, 0},
+                };
+            IPiece Piece = new Piece(bigBaseForm);
+
+            string formString = "  X " + Environment.NewLine + " XX " + Environment.NewLine + " X  " + Environment.NewLine + " X  " + Environment.NewLine;
+            Assert.AreEqual(formString, Piece.ToString());
         }
     }
 }
