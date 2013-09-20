@@ -15,8 +15,20 @@ namespace Blokus
         public BlokusGame(List<IBlokusPlayer> pPlayers)
         {
             mGameState = new byte[mColumns * mRows];
+
+            AddRandomData();
+
             mPlayers = pPlayers;
             Shuffle(mPlayers);
+        }
+
+        private void AddRandomData()
+        {
+            Random r = new Random();
+            for (int i = 0; i < mGameState.Length; i++)
+            {
+                mGameState[i] = (byte) r.Next(0, 5);
+            }
         }
 
         public void NextMove()
@@ -33,7 +45,7 @@ namespace Blokus
             for (int i = 0; i < mGameState.Length; i++)
             {
                 Console.ForegroundColor = GetColor(i);
-                Console.Write( mGameState[i] > 0 ? ((char) 0x25a0).ToString(): " ");// 2588 fyrir solid
+                Console.Write( mGameState[i] > 0 ? ((char) 0x25a0).ToString(): " ");// 2588 fyrir solid // 25a0 fyrir semi
                 if ((i + 1)%mColumns == 0)
                 {
                     Console.WriteLine();

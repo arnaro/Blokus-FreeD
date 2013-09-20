@@ -16,6 +16,7 @@ namespace Blokus
         {
 
             // Get some players from dll
+            Console.ResetColor();
             var v = GetPlayersFromDll();
             List<IBlokusPlayer> playas = SelectPlayers(v);
 
