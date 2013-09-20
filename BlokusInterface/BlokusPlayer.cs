@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Blokus.Players
+namespace Blokus
 {
-    public interface BlokusPlayer
+    public interface IBlokusPlayer
     {
-        byte[] PlayRound(byte[] gamestate);
+        BlokusGameState PlayRound(BlokusGameState gamestate);
         void Initialize(int playernumber);
     }
 }

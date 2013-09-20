@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Blokus.Players
 {
-    class BlokusTestPlayer : BlokusPlayer
+    class BlokusTestPlayer : IBlokusPlayer
     {
         private int playerid;
-        public byte[] PlayRound(byte[] gamestate)
+        public BlokusGameState PlayRound(BlokusGameState gamestate)
         {
             return gamestate;
         }
