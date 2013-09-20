@@ -11,15 +11,20 @@ namespace Blokus
     {
         private int mColumns = 20, mRows = 20;
         private byte[] mGameState;
-        private List<IBlokusPlayer> mPlayers; 
+        private List<IBlokusPlayer> mPlayers;
+
+        private BlokusGameState mCurrentGamestate;
         public BlokusGame(List<IBlokusPlayer> pPlayers)
         {
             mGameState = new byte[mColumns * mRows];
 
-            AddRandomData();
+            //AddRandomData();
 
             mPlayers = pPlayers;
             Shuffle(mPlayers);
+
+            mCurrentGamestate = new BlokusGameState();
+            mCurrentGamestate.BlokusBoard = mGameState;
         }
 
         private void AddRandomData()
@@ -44,18 +49,29 @@ namespace Blokus
 
             for (int i = 0; i < mGameState.Length; i++)
             {
-                Console.ForegroundColor = GetColor(i);
+                Console.ForegroundColor = GetColor(mGameState[i]);
                 Console.Write( mGameState[i] > 0 ? ((char) 0x25a0).ToString(): " ");// 2588 fyrir solid // 25a0 fyrir semi
                 if ((i + 1)%mColumns == 0)
                 {
                     Console.WriteLine();
                 }
             }
+
+            for (int i = 0; i < mPlayers.Count; i++)
+            {
+                Console.CursorLeft = mColumns + 5;
+                Console.CursorTop = 2 + 2*i;
+                Console.ForegroundColor = GetColor(i + 1);
+                Console.Write(mPlayers[i].Name);
+            }
+
+            Console.CursorLeft = 0;
+            Console.CursorTop = mRows + 1;
         }
 
-        private ConsoleColor GetColor(int index)
+        private ConsoleColor GetColor(int number)
         {
-            switch (mGameState[index])
+            switch (number)
             {
                 case 1:
                     return ConsoleColor.Blue;
