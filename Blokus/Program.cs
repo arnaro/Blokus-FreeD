@@ -15,19 +15,16 @@ namespace Blokus
         static void Main(string[] args)
         {
 
+            // Get some players from dll
             var v = GetPlayersFromDll();
             List<IBlokusPlayer> playas = SelectPlayers(v);
-            List<IBlokusPlayer> Players = new List<IBlokusPlayer>();
-            // Get some players from dll
-            //Players.Add(new BlokusTestPlayer());
-            //Players.Add(new BlokusTestPlayer());
-            //Players.Add(new BlokusTestPlayer());
-            //Players.Add(new BlokusTestPlayer());
 
             // Display Map
-            BlokusGame g = new BlokusGame(Players);
+            Console.Clear();
+            BlokusGame g = new BlokusGame(playas);
             g.PrintGameState();
-            char val = 'n';
+
+            char val = Console.ReadKey(true).KeyChar; ;
             while (val == 'n')
             {
                 Console.CursorLeft = 0;
@@ -52,8 +49,9 @@ namespace Blokus
                 char pressed = '_';
                 while (pressed != 'd' && pressed != 'D')
                 {
+                    int nextId = 1;
                     Console.Clear();
-                    Console.WriteLine(" ===== CodeWars Player selection ===== ");
+                    Console.WriteLine(" ===== Blokus Player selection ===== ");
 
                     Console.WriteLine(string.Format("Current players:"));
                     if (players.Count == 0)
@@ -64,8 +62,10 @@ namespace Blokus
                     {
                         for (int i = 1; i <= players.Count; i++)
                         {
-                            Console.WriteLine(indent + string.Format("{0}. {1}", i, players[i - 1].Name));
+                            Console.WriteLine(indent + string.Format("{0}. {1}", players[i - 1].Id, players[i - 1].Name));
                         }
+
+                        nextId = players.Count + 1;
                     }
                     Console.WriteLine("Select new player or 'D' when done");
                     for (int i = 1; i <= types.Count; i++)
@@ -83,6 +83,7 @@ namespace Blokus
                             string name = Console.ReadLine();
                             IBlokusPlayer p = (IBlokusPlayer)Activator.CreateInstance(types[iPress - 1]);
                             p.Name = name;
+                            p.Initialize(nextId);
                             players.Add(p);
                         }
                         catch (Exception ex)
