@@ -9,10 +9,10 @@ using NUnit.Framework;
 namespace Blokus
 {
     [TestFixture]
-    class BlockTests
+    class PieceTests
     {
         [Test]
-        public void BlockFormTest()
+        public void PieceFormTest()
         {
             var basicForm = new byte[1,1];
             basicForm[0,0] = 1;
