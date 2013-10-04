@@ -61,15 +61,16 @@ namespace Blokus
         }
 
         [Test]
-<<<<<<< HEAD
         public void TestScore()
         {
-            BlokusGameState state = new BlokusGameState(new byte[] { 2, 2, 2, 1, 2, 0, 0, 0, 0, 3, 0, 0, 1, 1, 0, 0 }, null);
-            Assert.AreEqual(3,bg.GetScore(1, state));
-            Assert.AreEqual(4,bg.GetScore(2, state));
-            Assert.AreEqual(1,bg.GetScore(3, state));
-            Assert.AreEqual(0,bg.GetScore(4, state));
-=======
+            BlokusGameState state = new BlokusGameState(new byte[] {2, 2, 2, 1, 2, 0, 0, 0, 0, 3, 0, 0, 1, 1, 0, 0},
+                                                        null);
+            Assert.AreEqual(3, bg.GetScore(1, state));
+            Assert.AreEqual(4, bg.GetScore(2, state));
+            Assert.AreEqual(1, bg.GetScore(3, state));
+            Assert.AreEqual(0, bg.GetScore(4, state));
+        }
+
         public void CornerToCornerSimple()
         {
             BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 }, null);
@@ -193,7 +194,6 @@ namespace Blokus
 
             bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
->>>>>>> 2ec4e3c35225d4b4d3d6db8b71637eb47aa3ac38
         }
     }
 
