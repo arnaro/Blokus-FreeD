@@ -59,6 +59,132 @@ namespace Blokus
             bool isOnTop = bg.IsCorrectPlayerOnEmptySpace(players[0], newState, oldState);
             Assert.AreEqual(false, isOnTop);
         }
+
+        [Test]
+        public void CornerToCornerSimple()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   1, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(true, corner);
+        }
+
+        [Test]
+        public void NoCornerToCornerSimple()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 1 }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(false, corner);
+        }
+
+        [Test]
+        public void SideToSideSimple()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(false, corner);
+        }
+        [Test]
+        public void CornerToCornerComplex()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0,  0, 0, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0,  0, 0, 1, 0,  0, 1, 0, 1,  0, 1, 1, 1 }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(true, corner);
+        }
+
+        [Test]
+        public void NoCornerToCornerComplex()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1 }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(false, corner);
+        }
+
+        [Test]
+        public void SideToSideComplex()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(false, corner);
+        }
+
+        [Test]
+        public void CornerToCornerComplexColors()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[]
+            {
+                1, 1, 1, 2,
+                3, 3, 1, 2,
+                3, 0, 2, 2,
+                3, 0, 0, 0
+            }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[]
+            {
+                1, 1, 1, 2,
+                3, 3, 1, 2,
+                3, 1, 2, 2,
+                3, 1, 1, 1
+            }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(true, corner);
+        }
+
+
+        [Test]
+        public void NoCornerToCornerComplexColors()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[]
+            {
+                1, 1, 1, 2,
+                3, 3, 1, 2,
+                3, 0, 2, 2,
+                3, 0, 0, 0
+            }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[]
+            {
+                1, 1, 1, 2,
+                3, 3, 1, 2,
+                3, 0, 2, 2,
+                3, 1, 1, 1
+            }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(false, corner);
+        }
+
+        [Test]
+        public void SideToSideComplexColors()
+        {
+            BlokusGameState oldState = new BlokusGameState(new byte[]
+            {
+                1, 1, 1, 2,
+                3, 0, 1, 2,
+                3, 0, 2, 2,
+                3, 0, 0, 0
+            }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[]
+            {
+                1, 1, 1, 2,
+                3, 1, 1, 2,
+                3, 1, 2, 2,
+                3, 0, 0, 0
+            }, null);
+
+            bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
+            Assert.AreEqual(false, corner);
+        }
     }
 
     public class BlockusUnitTestPlayer : IBlokusPlayer

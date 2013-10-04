@@ -62,6 +62,48 @@ namespace Blokus
             return diff.All(a => a == 0 || a == player.Id);
         }
 
+        public bool IsCornerToCorner(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldState)
+        {
+            int howManyPer = (int) Math.Sqrt(newState.BlokusBoard.Length);
+            var diff = newState.BlokusBoard.Select((a, i) => new
+            {
+                X = i%howManyPer,
+                Y = i/howManyPer,
+                Value = (byte) (a - oldState.BlokusBoard[i])
+            }).Where(a => a.Value == player.Id);
+
+            bool hasAtLeastOneCorner = false;
+            foreach (var coord in diff)
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        int tempx = coord.X + x;
+                        int tempy = coord.Y + y;
+
+                        if (tempx >= 0 && tempx < howManyPer && tempy >= 0 && tempy < howManyPer)
+                        {
+                            int newIndex = tempx + tempy * howManyPer;
+                            byte oldValue = oldState.BlokusBoard[newIndex];
+                            if (oldValue == player.Id)
+                            {
+                                if (x == 0 || y == 0)
+                                {
+                                    // samside
+                                    return false;
+                                }
+
+                                // corner
+                                hasAtLeastOneCorner = true;
+                            }
+                        }
+                    }
+                }
+            }
+            return hasAtLeastOneCorner;
+        }
+
         public void PrintGameState()
         {
             Console.ResetColor();
