@@ -25,8 +25,9 @@ namespace Blokus
             BlokusGame g = new BlokusGame(playas);
             g.PrintGameState();
 
-            char val = Console.ReadKey(true).KeyChar; ;
-            while (val == 'n')
+            char val = Console.ReadKey(true).KeyChar;
+            
+            while (val == 'n' || ! g.IsGameOver())
             {
                 Console.CursorLeft = 0;
                 Console.CursorTop = 0;
@@ -35,6 +36,14 @@ namespace Blokus
                 val = Console.ReadKey(true).KeyChar;
             }
 
+            if (!g.IsGameOver())
+            {
+                Console.WriteLine("Game terminated");
+            }
+            else
+            {
+                Console.WriteLine("Game over");
+            }
         }
 
         public static List<IBlokusPlayer> SelectPlayers(List<Type> types)

@@ -39,19 +39,27 @@ namespace Blokus
 
         public void NextMove()
         {
-            mCurrentPlayerIndex = (mCurrentPlayerIndex + 1) % 4;
+            mCurrentPlayerIndex = (mCurrentPlayerIndex + 1)%4;
 
             BlokusPlayerState currentPlayerState = mPlayerStates[mCurrentPlayerIndex];
+            if (!currentPlayerState.PassLastTurn)
+            {
 
-            // Time limit? 2 sec
+                // Time limit? 2 sec
 
-            BlokusGameState playerState = new BlokusGameState(mGameState, currentPlayerState.Pieces);
-            BlokusGameState newState = currentPlayerState.Player.PlayRound(playerState);
+                BlokusGameState playerState = new BlokusGameState(mGameState, currentPlayerState.Pieces);
+                BlokusGameState newState = currentPlayerState.Player.PlayRound(playerState);
 
-            bool isValid = false;
-            // bool isValid= Validate(player, mGameState, newState);
-              // should validate remote piece?
-            // save as new state
+                bool isValid = false;
+                // bool isValid= Validate(player, mGameState, newState);
+                // should validate remote piece?
+                if (!isValid)
+                {
+                    currentPlayerState.PassLastTurn = true;
+                }
+               
+                // save as new state
+            }
         }
 
         public bool IsCorrectPlayerOnEmptySpace(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldState)
