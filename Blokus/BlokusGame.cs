@@ -23,7 +23,7 @@ namespace Blokus
             //AddRandomData();
 
             mPlayers = pPlayers;
-            Shuffle(mPlayers);
+            //Shuffle(mPlayers);
 
             mPlayers.ForEach(a=> mPieceDictionary.Add(a, PieceFactory.GetPieces()));
 
@@ -54,7 +54,12 @@ namespace Blokus
             // bool isValid= Validate(player, mGameState, newState);
               // should validate remote piece?
             // save as new state
+        }
 
+        public bool IsCorrectPlayerOnEmptySpace(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldState)
+        {
+            List<byte> diff = newState.BlokusBoard.Select((a, i) => (byte) (a - oldState.BlokusBoard[i])).ToList();
+            return diff.All(a => a == 0 || a == player.Id);
         }
 
         public void PrintGameState()

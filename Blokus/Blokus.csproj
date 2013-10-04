@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlokusGameTests.cs" />
     <Compile Include="PieceFactoryTest.cs" />
     <Compile Include="PieceTests.cs" />
     <Compile Include="Model\Piece.cs" />
