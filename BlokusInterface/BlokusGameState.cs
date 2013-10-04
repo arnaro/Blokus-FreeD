@@ -7,8 +7,14 @@ namespace Blokus
 {
     public class BlokusGameState
     {
-        public byte[] BlokusBoard { get; set; }
+        public BlokusGameState(byte[] pGameState, IList<IPiece> pPieces)
+        {
+            BlokusBoard = pGameState;
+            AvailablePieces = pPieces;
+        }
 
-        List<IPiece> AvailablePieces { get; set; } 
+        public byte[] BlokusBoard { get; private set; }
+
+        public IList<IPiece> AvailablePieces { get; private set; }
     }
 }

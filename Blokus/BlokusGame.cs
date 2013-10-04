@@ -12,8 +12,10 @@ namespace Blokus
         private int mColumns = 20, mRows = 20;
         private byte[] mGameState;
         private List<IBlokusPlayer> mPlayers;
+        private int mCurrentPlayerIndex = -1;
 
-        private BlokusGameState mCurrentGamestate;
+        private Dictionary<IBlokusPlayer, IList<IPiece>> mPieceDictionary = new Dictionary<IBlokusPlayer, IList<IPiece>>();
+
         public BlokusGame(List<IBlokusPlayer> pPlayers)
         {
             mGameState = new byte[mColumns * mRows];
@@ -23,8 +25,8 @@ namespace Blokus
             mPlayers = pPlayers;
             Shuffle(mPlayers);
 
-            mCurrentGamestate = new BlokusGameState();
-            mCurrentGamestate.BlokusBoard = mGameState;
+            mPlayers.ForEach(a=> mPieceDictionary.Add(a, PieceFactory.GetPieces()));
+
         }
 
         private void AddRandomData()
@@ -38,7 +40,21 @@ namespace Blokus
 
         public void NextMove()
         {
-            
+            mCurrentPlayerIndex = (mCurrentPlayerIndex + 1) % 4;
+
+            IBlokusPlayer player = mPlayers[mCurrentPlayerIndex];
+
+            // Time limit? 2 sec
+
+            BlokusGameState playerState = new BlokusGameState(mGameState, mPieceDictionary[player]);
+                
+            BlokusGameState newState = player.PlayRound(playerState);
+
+            bool isValid = false;
+            // bool isValid= Validate(player, mGameState, newState);
+              // should validate remote piece?
+            // save as new state
+
         }
 
         public void PrintGameState()
