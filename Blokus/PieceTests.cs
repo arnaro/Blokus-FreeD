@@ -179,5 +179,44 @@ namespace Blokus
 
             Assert.AreEqual(2, piece.ListRoations().Count);
         }
+
+        [Test]
+        public void PieceCompareTest()
+        {
+            var form = new byte[4, 4]
+                {
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                };
+
+            IPiece pieceA = new Piece(form);
+            IPiece pieceB = new Piece(form);
+
+            Assert.IsTrue(pieceA.Equals(pieceB));
+
+            form = new byte[4, 4]
+                {
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 1, 1},
+                };
+            IPiece pieceC = new Piece(form);
+
+            Assert.IsFalse(pieceA.Equals(pieceC));
+
+            form = new byte[4, 4]
+                {
+                    {0, 0, 0, 0},
+                    {0, 0, 0, 0},
+                    {0, 0, 0, 0},
+                    {1, 1, 1, 1},
+                };
+            IPiece pieceD = new Piece(form);
+
+            Assert.IsTrue(pieceA.Equals(pieceD));
+        }
     }
 }

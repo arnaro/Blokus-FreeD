@@ -121,7 +121,7 @@ namespace Blokus.Model
 
         public List<byte[,]> PruneForms(List<byte[,]> ListOfRotations)
         {
-            return ListOfRotations.Distinct(new PieceComparer()).ToList();
+            return ListOfRotations.Distinct(new ByteArrayComparer()).ToList();
         }
 
         byte[,] RotateMatrix(byte[,] matrix)
@@ -152,7 +152,40 @@ namespace Blokus.Model
             return stringBuilder.ToString();
         }
 
-        public class PieceComparer : IEqualityComparer<byte[,]>
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Piece))
+            {
+                return false;
+            }
+            Piece pieceA = this;
+            Piece pieceB = obj as Piece;
+
+            var rotationsA = pieceA.ListRoations();
+            var rotationsB = pieceB.ListRoations();
+
+            ByteArrayComparer byteComparer = new ByteArrayComparer();
+            foreach (var rotation in rotationsA)
+            {
+                if (byteComparer.Equals(rotation, rotationsB[0]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool operator ==(Piece a, Piece b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Piece a, Piece b)
+        {
+            return !(a == b);
+        }
+
+        public class ByteArrayComparer : IEqualityComparer<byte[,]>
         {
             public bool Equals(byte[,] x, byte[,] y)
             {
@@ -178,15 +211,6 @@ namespace Blokus.Model
             public int GetHashCode(byte[,] obj)
             {
                 return base.GetHashCode();
-                int result = 13 * obj.Length;
-                for (int i = 0; i < obj.GetLength(1); i++)
-                {
-                    for (int j = 0; j < obj.GetLength(0); j++)
-                    {
-                        result = (17*result) + obj[i,j];
-                    }
-                }
-                return result;
             }
         }
     }
