@@ -62,6 +62,11 @@ namespace Blokus
             return diff.All(a => a == 0 || a == player.Id);
         }
 
+        internal int GetScore(int playerId, BlokusGameState state)
+        {
+            return state.BlokusBoard.Count(x => x == playerId);
+        }
+
         public void PrintGameState()
         {
             Console.ResetColor();
