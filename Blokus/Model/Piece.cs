@@ -32,7 +32,9 @@ namespace Blokus.Model
             {
                 array.Add(RotateMatrix(array[i - 1]));
             }
+            return array.Distinct(new PieceComparer()).ToList();
             return array;
+            //return PruneForms(array);
         }
 
         byte[,] FlipMatrix(byte[,] matrix)
@@ -48,9 +50,19 @@ namespace Blokus.Model
             return flippedMatrix;
         }
 
-        public void PruneForms()
+        public List<byte[,]> PruneForms(List<byte[,]> ListOfRotations)
         {
-            
+            return new List<byte[,]>();
+            //return (ListOfRotations.Distinct(new PieceComparer());
+
+
+            //if (ListOfRotations[0].ToString() == ListOfRotations[4].ToString())
+            //{
+            //    ListOfRotations.RemoveRange(4,4);
+            //}
+
+            //ListOfRotations.RemoveAll(a => a.ToString() == ListOfRotations[0].ToString() && a != ListOfRotations[0]);
+            //return ListOfRotations;
         }
 
         byte[,] RotateMatrix(byte[,] matrix)
@@ -79,6 +91,38 @@ namespace Blokus.Model
                 stringBuilder.Append(Environment.NewLine);
             }
             return stringBuilder.ToString();
+        }
+
+        public class PieceComparer : IEqualityComparer<byte[,]>
+        {
+            public bool Equals(byte[,] x, byte[,] y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (x == null || y == null) return false;
+                if (x.Length != y.Length) return false;
+                for (int i = 0; i < x.Length; i++)
+                {
+                    for (int j = 0; j < x.LongLength; j++)
+                    {
+                        if (x[i,j] != y[i,j]) return false;
+                    }
+                }
+                return true;
+
+            }
+
+            public int GetHashCode(byte[,] obj)
+            {
+                int result = 13 * obj.Length;
+                for (int i = 0; i < obj.Length; i++)
+                {
+                    for (int j = 0; j < obj.LongLength; j++)
+                    {
+                        result = (17*result) + obj[i,j];
+                    }
+                }
+                return result;
+            }
         }
     }
 }
