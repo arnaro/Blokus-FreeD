@@ -60,11 +60,11 @@ namespace Blokus
             return diff.All(a => a == 0 || a == player.Id);
         }
 
-<<<<<<< HEAD
         internal int GetScore(int playerId, BlokusGameState state)
         {
             return state.BlokusBoard.Count(x => x == playerId);
-=======
+        }
+
         public bool IsCornerToCorner(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldState)
         {
             int howManyPer = (int) Math.Sqrt(newState.BlokusBoard.Length);
@@ -110,7 +110,6 @@ namespace Blokus
         public bool IsGameOver()
         {
             return mPlayerStates.All(a => a.PassLastTurn);
->>>>>>> 2ec4e3c35225d4b4d3d6db8b71637eb47aa3ac38
         }
 
         public void PrintGameState()
