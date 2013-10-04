@@ -12,9 +12,8 @@ namespace Blokus
         private int mColumns = 20, mRows = 20;
         private byte[] mGameState;
         private List<IBlokusPlayer> mPlayers;
+        private List<BlokusPlayerState> mPlayerStates; 
         private int mCurrentPlayerIndex = -1;
-
-        private Dictionary<IBlokusPlayer, IList<IPiece>> mPieceDictionary = new Dictionary<IBlokusPlayer, IList<IPiece>>();
 
         public BlokusGame(List<IBlokusPlayer> pPlayers)
         {
@@ -24,8 +23,8 @@ namespace Blokus
 
             mPlayers = pPlayers;
             //Shuffle(mPlayers);
+            mPlayerStates = mPlayers.Select(a => new BlokusPlayerState {Player = a, Pieces = PieceFactory.GetPieces(), PassLastTurn = false}).ToList();
 
-            mPlayers.ForEach(a=> mPieceDictionary.Add(a, PieceFactory.GetPieces()));
 
         }
 
@@ -42,13 +41,12 @@ namespace Blokus
         {
             mCurrentPlayerIndex = (mCurrentPlayerIndex + 1) % 4;
 
-            IBlokusPlayer player = mPlayers[mCurrentPlayerIndex];
+            BlokusPlayerState currentPlayerState = mPlayerStates[mCurrentPlayerIndex];
 
             // Time limit? 2 sec
 
-            BlokusGameState playerState = new BlokusGameState(mGameState, mPieceDictionary[player]);
-                
-            BlokusGameState newState = player.PlayRound(playerState);
+            BlokusGameState playerState = new BlokusGameState(mGameState, currentPlayerState.Pieces);
+            BlokusGameState newState = currentPlayerState.Player.PlayRound(playerState);
 
             bool isValid = false;
             // bool isValid= Validate(player, mGameState, newState);
@@ -102,6 +100,11 @@ namespace Blokus
                 }
             }
             return hasAtLeastOneCorner;
+        }
+        
+        public bool IsGameOver()
+        {
+            return mPlayerStates.All(a => a.PassLastTurn);
         }
 
         public void PrintGameState()
@@ -162,5 +165,14 @@ namespace Blokus
                 list[n] = value;
             }
         }
+    }
+
+    public class BlokusPlayerState
+    {
+        public bool PassLastTurn { get; set; }
+
+        public IBlokusPlayer Player { get; set; }
+
+        public IList<IPiece> Pieces { get; set; }
     }
 }
