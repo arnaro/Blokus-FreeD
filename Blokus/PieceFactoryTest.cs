@@ -13,6 +13,7 @@ namespace Blokus
         [Test]
         public void TestPieceFactory()
         {
+<<<<<<< HEAD
             string input = "x";
 
             var test = solution(input);
@@ -21,10 +22,13 @@ namespace Blokus
             //Assert.AreEqual(4, adjacency(new[] { 1, 0,0,0,1 }));
             Assert.AreEqual(4, adjacency(new[] { 1, 1, 0, 1, 0, 0 }));
 
+=======
+>>>>>>> c839d6907ac6ba09bd9485f51cc161076fc46bf8
             Assert.AreEqual(21, PieceFactory.GetPieces().Count);
             string formString = "XXX" + Environment.NewLine + "  X" + Environment.NewLine + "   " + Environment.NewLine;
             Assert.AreEqual(formString, PieceFactory.GetPieces()[7].ToString());
         }
+<<<<<<< HEAD
 
         public int adjacency(int[] A)
         {
@@ -108,5 +112,7 @@ namespace Blokus
             }
             return -1;
         }
+=======
+>>>>>>> c839d6907ac6ba09bd9485f51cc161076fc46bf8
     }
 }

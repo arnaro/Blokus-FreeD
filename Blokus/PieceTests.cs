@@ -18,7 +18,7 @@ namespace Blokus
             basicForm[0,0] = 1;
 
             Piece piece = new Piece(basicForm);
-            Assert.AreEqual(1,piece.ListRoations().Count);
+            Assert.AreEqual(8,piece.ListRoations().Count);
 
             basicForm = new byte[2,2]
                 {
