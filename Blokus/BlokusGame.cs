@@ -68,6 +68,11 @@ namespace Blokus
             return diff.All(a => a == 0 || a == player.Id);
         }
 
+        internal int GetScore(int playerId, BlokusGameState state)
+        {
+            return state.BlokusBoard.Count(x => x == playerId);
+        }
+
         public bool IsCornerToCorner(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldState)
         {
             int howManyPer = (int) Math.Sqrt(newState.BlokusBoard.Length);

@@ -61,6 +61,16 @@ namespace Blokus
         }
 
         [Test]
+        public void TestScore()
+        {
+            BlokusGameState state = new BlokusGameState(new byte[] {2, 2, 2, 1, 2, 0, 0, 0, 0, 3, 0, 0, 1, 1, 0, 0},
+                                                        null);
+            Assert.AreEqual(3, bg.GetScore(1, state));
+            Assert.AreEqual(4, bg.GetScore(2, state));
+            Assert.AreEqual(1, bg.GetScore(3, state));
+            Assert.AreEqual(0, bg.GetScore(4, state));
+        }
+
         public void CornerToCornerSimple()
         {
             BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 }, null);
