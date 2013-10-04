@@ -9,7 +9,7 @@ namespace Blokus.Model
     class Piece : IPiece
     {
         protected byte[,] baseForm;
-        private int size;
+        private int size;  //Danger! Will change after Trim
 
         public Piece(byte[,] matrix)
         {
@@ -32,9 +32,9 @@ namespace Blokus.Model
             {
                 array.Add(RotateMatrix(array[i - 1]));
             }
-            return array.Distinct(new PieceComparer()).ToList();
-            return array;
-            //return PruneForms(array);
+
+            array = Trim(array);
+            return PruneForms(array);
         }
 
         byte[,] FlipMatrix(byte[,] matrix)
@@ -50,19 +50,78 @@ namespace Blokus.Model
             return flippedMatrix;
         }
 
+        public List<byte[,]> Trim(List<byte[,]> pieces)
+        {
+            List<byte[,]> ret = new List<byte[,]>();
+            foreach (var piece in pieces)
+            {
+                ret.Add(Trim(piece));
+            }
+            return ret;
+        }
+
+        public byte[,] Trim(byte[,] piece)
+        {
+            List<List<byte>> newList = new List<List<byte>>();
+
+            for (int x = 0; x < size; x++)
+            {
+                List<byte> row = new List<byte>();
+                bool empty = true;
+                for (int y = 0; y < size; y++)
+                {
+                    if (piece[x, y] > 0)
+                    {
+                        empty = false;
+                        break;
+                    }
+                }
+                if (!empty)
+                {
+                    for (int i = 0; i < size; i++)
+                    {
+                        row.Add(piece[x, i]);
+                    }
+                    newList.Add(row);
+                }
+            }
+
+            for (int x = size-1; x >= 0; x--)
+            {
+                bool empty = true;
+                foreach (var row in newList)
+                {
+                    if (row[x] > 0)
+                    {
+                        empty = false;
+                        break;
+                    }
+                }
+                if (empty)
+                {
+                    foreach (var row in newList)
+                    {
+                        row.RemoveAt(x);
+                    }
+                }
+            }
+
+            //Change to byte array
+            byte[,] retArray = new byte[newList.Count,newList[0].Count];
+            for (int y = 0; y < newList[0].Count; y++)
+            {
+                for (int x = 0; x < newList.Count; x++)
+                {
+                    retArray[x, y] = newList[x][y];
+                }
+            }
+
+            return retArray;
+        }
+
         public List<byte[,]> PruneForms(List<byte[,]> ListOfRotations)
         {
-            return new List<byte[,]>();
-            //return (ListOfRotations.Distinct(new PieceComparer());
-
-
-            //if (ListOfRotations[0].ToString() == ListOfRotations[4].ToString())
-            //{
-            //    ListOfRotations.RemoveRange(4,4);
-            //}
-
-            //ListOfRotations.RemoveAll(a => a.ToString() == ListOfRotations[0].ToString() && a != ListOfRotations[0]);
-            //return ListOfRotations;
+            return ListOfRotations.Distinct(new PieceComparer()).ToList();
         }
 
         byte[,] RotateMatrix(byte[,] matrix)
@@ -100,23 +159,29 @@ namespace Blokus.Model
                 if (ReferenceEquals(x, y)) return true;
                 if (x == null || y == null) return false;
                 if (x.Length != y.Length) return false;
-                for (int i = 0; i < x.Length; i++)
+                if (x.GetLength(1) != y.GetLength(1)) return false;
+                if (x.GetLength(0) != y.GetLength(0)) return false;
+                
+                for (int i = 0; i < x.GetLength(1); i++)
                 {
-                    for (int j = 0; j < x.LongLength; j++)
+                    for (int j = 0; j < x.GetLength(0); j++)
                     {
-                        if (x[i,j] != y[i,j]) return false;
+                        if (x[j, i] != y[j, i])
+                        {
+                            return false;
+                        }
                     }
                 }
                 return true;
-
             }
 
             public int GetHashCode(byte[,] obj)
             {
+                return base.GetHashCode();
                 int result = 13 * obj.Length;
-                for (int i = 0; i < obj.Length; i++)
+                for (int i = 0; i < obj.GetLength(1); i++)
                 {
-                    for (int j = 0; j < obj.LongLength; j++)
+                    for (int j = 0; j < obj.GetLength(0); j++)
                     {
                         result = (17*result) + obj[i,j];
                     }

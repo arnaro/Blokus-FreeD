@@ -18,7 +18,7 @@ namespace Blokus
             basicForm[0,0] = 1;
 
             Piece piece = new Piece(basicForm);
-            Assert.AreEqual(8,piece.ListRoations().Count);
+            Assert.AreEqual(1,piece.ListRoations().Count);
 
             basicForm = new byte[2,2]
                 {
@@ -41,12 +41,12 @@ namespace Blokus
                     {0, 1, 0, 0},
                     {0, 1, 0, 0},
                 };
-            var formFlip = new byte[4, 4]
+            var formFlip = new byte[4, 2]
                 {
-                    {0, 1, 0, 0},
-                    {0, 1, 1, 0},
-                    {0, 0, 1, 0},
-                    {0, 0, 1, 0},
+                    {1, 0},
+                    {1, 1},
+                    {0, 1},
+                    {0, 1},
                 };
             piece = new Piece(bigBaseForm);
             Assert.AreEqual(formFlip, piece.ListRoations()[4]);
@@ -66,6 +66,118 @@ namespace Blokus
 
             string formString = "  X " + Environment.NewLine + " XX " + Environment.NewLine + " X  " + Environment.NewLine + " X  " + Environment.NewLine;
             Assert.AreEqual(formString, Piece.ToString());
+        }
+
+
+        [Test]
+        public void PieceTrimTest()
+        {
+            var bigBaseForm = new byte[4, 4]
+                {
+                    {0, 0, 1, 0},
+                    {0, 1, 1, 0},
+                    {0, 1, 0, 0},
+                    {0, 1, 0, 0},
+                };
+            Piece Piece = new Piece(bigBaseForm);
+            var expectedArray = new byte[4, 2]
+                {
+                    {0, 1},
+                    {1, 1},
+                    {1, 0},
+                    {1, 0},
+                };
+
+            var piece = Piece.Trim(bigBaseForm);
+            Assert.AreEqual(expectedArray, piece);
+
+            bigBaseForm = new byte[4, 4]
+                {
+                    {0, 0, 0, 0},
+                    {0, 1, 1, 0},
+                    {0, 1, 0, 0},
+                    {0, 0, 0, 0},
+                };
+            Piece = new Piece(bigBaseForm);
+            expectedArray = new byte[2, 2]
+                {
+                    {1, 1},
+                    {1, 0}
+                };
+
+            piece = Piece.Trim(bigBaseForm);
+            Assert.AreEqual(expectedArray, piece);
+
+            bigBaseForm = new byte[4, 4]
+                {
+                    {0, 0, 0, 0},
+                    {1, 1, 1, 0},
+                    {0, 1, 0, 1},
+                    {0, 0, 0, 0},
+                };
+            Piece = new Piece(bigBaseForm);
+            expectedArray = new byte[2, 4]
+                {
+                    {1, 1, 1, 0},
+                    {0, 1, 0, 1},
+                };
+
+            piece = Piece.Trim(bigBaseForm);
+            Assert.AreEqual(expectedArray, piece);
+            
+            bigBaseForm = new byte[4, 4]
+                {
+                    {1, 0, 0, 0},
+                    {1, 0, 0, 0},
+                    {1, 0, 0, 0},
+                    {1, 0, 0, 0},
+                };
+            Piece = new Piece(bigBaseForm);
+            expectedArray = new byte[4, 1]
+                {
+                    {1},
+                    {1},
+                    {1},
+                    {1}
+                };
+
+            piece = Piece.Trim(bigBaseForm);
+            Assert.AreEqual(expectedArray, piece);
+            
+            bigBaseForm = new byte[4, 4]
+                {
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                };
+            Piece = new Piece(bigBaseForm);
+            expectedArray = new byte[4, 1]
+                {
+                    {1},
+                    {1},
+                    {1},
+                    {1}
+                };
+
+            piece = Piece.Trim(bigBaseForm);
+            Assert.AreEqual(expectedArray, piece);
+        }
+
+        [Test]
+        public void PiecePruneTest()
+        {
+            var form = new byte[4, 4]
+                {
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                    {0, 0, 0, 1},
+                };
+
+            IPiece piece = new Piece(form);
+
+            Assert.AreEqual(2, piece.ListRoations().Count);
         }
     }
 }
