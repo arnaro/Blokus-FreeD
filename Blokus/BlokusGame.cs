@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blokus.Model;
 
 namespace Blokus
 {
@@ -36,6 +37,69 @@ namespace Blokus
             {
                 mGameState[i] = (byte) r.Next(0, 5);
             }
+        }
+
+        public bool Validate(BlokusGameState newState, IBlokusPlayer player)
+        {
+            byte[] changes = new byte[400];
+            for (int i = 0; i < 400; i++)
+            {
+                if (mGameState[i] != newState.BlokusBoard[i])
+                {
+                    changes[i] = 1;
+                }
+
+            }
+            int minx = 20;
+            int maxx = 0;
+            int miny = 20;
+            int maxy = 0;
+            int u = 0;
+            int v = 0;
+            while (u < 20 && v < 20)
+            {
+                if (changes[20 * v + u] == 1)
+                {
+                    if (u < minx) minx = u;
+                    if (u > maxx) maxx = u;
+                    if (v < miny) miny = v;
+                    if (v > maxy) maxy = v;
+                }
+                u++;
+                if (u >= 20)
+                {
+                    u = 0;
+                    v++;
+                }
+            }
+
+            int height = (maxy - miny) + 1;
+            int width = (maxx - minx) + 1;
+            int maxdim = height > width ? height : width;
+            byte[,] piece = new byte[maxdim, maxdim];
+
+            for (u = minx; u <= maxx; u++)
+            {
+                for (v = miny; v <= maxy; v++)
+                {
+
+                    piece[v - miny, u - minx] = changes[v * 20 + u];
+                }
+            }
+
+            return IsPiece(newState.AvailablePieces.ToList(),new Piece(piece));
+        }
+        public bool IsPiece(List<IPiece> pieces, IPiece piece)
+        {
+            bool found = false;
+            pieces.ForEach(a =>
+            {
+                if (a.Equals(piece))
+                {
+                    found = true;
+                }
+            });
+            return found;
         }
 
         public void NextMove()

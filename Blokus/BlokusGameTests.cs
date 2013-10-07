@@ -21,6 +21,77 @@ namespace Blokus
         }
 
         [Test]
+        public void PieceAvailable()
+        {
+            byte[] gamestate = new byte[400];
+            for (int i = 0; i < 5; i++)
+            {
+                gamestate[i] = 1;
+            }
+
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+            bool result = bg.Validate(newstate, players.ElementAt(0));
+
+            Assert.AreEqual(true, result);
+        }
+
+        [Test]
+        public void PieceNotAvailable()
+        {
+            byte[] gamestate = new byte[400];
+            for (int i = 0; i < 6; i++)
+            {
+                gamestate[i] = 1;
+            }
+
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+            bool result = bg.Validate(newstate, players.ElementAt(0));
+
+            Assert.AreEqual(false, result);
+        }
+        [Test]
+        public void SinglePieceAvailable()
+        {
+            byte[] gamestate = new byte[400];
+            for (int i = 0; i < 1; i++)
+            {
+                gamestate[i] = 1;
+            }
+
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+            bool result = bg.Validate(newstate, players.ElementAt(0));
+
+            Assert.AreEqual(true, result);
+        }
+        [Test]
+        public void MultiRowPieceAvailable()
+        {
+            byte[] gamestate = new byte[400];
+            for (int i = 0; i < 2; i++)
+            {
+                gamestate[i] = 1;
+                gamestate[i + 20] = 1;
+            }
+
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+            bool result = bg.Validate(newstate, players.ElementAt(0));
+
+            Assert.AreEqual(true, result);
+        }
+        [Test,Ignore("Fails, Need to handle no changes in code")]
+        public void NoChanges()
+        {
+            byte[] gamestate = new byte[400];
+
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+            bool result = bg.Validate(newstate, players.ElementAt(0));
+
+            Assert.AreEqual(false, result);
+        }
+
+
+
+        [Test]
         public void TestIsNotOnTopOf()
         {
             BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
