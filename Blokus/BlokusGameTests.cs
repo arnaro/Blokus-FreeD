@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Blokus
 {
+
+
+
     [TestFixture]
     public class BlokusGameTests
     {
@@ -16,9 +19,27 @@ namespace Blokus
         [SetUp]
         public void setup()
         {
-            players = new List<IBlokusPlayer> {new BlockusUnitTestPlayer{Id = 1}, new BlockusUnitTestPlayer { Id = 2}};
+            players = new List<IBlokusPlayer> { new BlockusUnitTestPlayer { Id = 1 }, new BlockusUnitTestPlayer { Id = 2 }, new BlockusUnitTestPlayer { Id = 3 }, new BlockusUnitTestPlayer { Id = 4 } };
             bg = new BlokusGame(players);
         }
+
+        [Test]
+        public void GamePlayTestEveryonePasses()
+        {
+            byte[] gamestate = new byte[400];
+            for (int i = 0; i < 5; i++)
+            {
+                gamestate[i] = 1;
+            }
+            byte[] oldgamestate = new byte[400];
+
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+
+            bg.PlayGame();
+            Assert.IsTrue(bg.IsGameOver());
+        }
+
 
         [Test]
         public void PieceAvailable()
@@ -28,9 +49,10 @@ namespace Blokus
             {
                 gamestate[i] = 1;
             }
-
+            byte[] oldgamestate = new byte[400];
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
-            bool result = bg.Validate(newstate, players.ElementAt(0));
+            bool result = bg.CheckAndPlacePiece(newstate,oldstate);
 
             Assert.AreEqual(true, result);
         }
@@ -38,6 +60,8 @@ namespace Blokus
         [Test]
         public void PieceNotAvailable()
         {
+            byte[] oldgamestate = new byte[400];
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
             byte[] gamestate = new byte[400];
             for (int i = 0; i < 6; i++)
             {
@@ -45,13 +69,15 @@ namespace Blokus
             }
 
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
-            bool result = bg.Validate(newstate, players.ElementAt(0));
+            bool result = bg.CheckAndPlacePiece(newstate, oldstate);
 
             Assert.AreEqual(false, result);
         }
         [Test]
         public void SinglePieceAvailable()
         {
+            byte[] oldgamestate = new byte[400];
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
             byte[] gamestate = new byte[400];
             for (int i = 0; i < 1; i++)
             {
@@ -59,13 +85,15 @@ namespace Blokus
             }
 
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
-            bool result = bg.Validate(newstate, players.ElementAt(0));
+            bool result = bg.CheckAndPlacePiece(newstate, oldstate);
 
             Assert.AreEqual(true, result);
         }
         [Test]
         public void MultiRowPieceAvailable()
         {
+            byte[] oldgamestate = new byte[400];
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
             byte[] gamestate = new byte[400];
             for (int i = 0; i < 2; i++)
             {
@@ -74,17 +102,19 @@ namespace Blokus
             }
 
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
-            bool result = bg.Validate(newstate, players.ElementAt(0));
+            bool result = bg.CheckAndPlacePiece(newstate, oldstate);
 
             Assert.AreEqual(true, result);
         }
         [Test,Ignore("Fails, Need to handle no changes in code")]
         public void NoChanges()
         {
+            byte[] oldgamestate = new byte[400];
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
             byte[] gamestate = new byte[400];
 
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
-            bool result = bg.Validate(newstate, players.ElementAt(0));
+            bool result = bg.CheckAndPlacePiece(newstate, oldstate);
 
             Assert.AreEqual(false, result);
         }
