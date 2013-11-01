@@ -27,7 +27,7 @@ namespace Blokus
 
             char val = Console.ReadKey(true).KeyChar;
             
-            while (val == 'n' || ! g.IsGameOver())
+            while (val == 'n' && !g.IsGameOver())
             {
                 Console.CursorLeft = 0;
                 Console.CursorTop = 0;
@@ -44,6 +44,8 @@ namespace Blokus
             {
                 Console.WriteLine("Game over");
             }
+            // TODO WINNER IS!!
+            Console.ReadKey();
         }
 
         public static List<IBlokusPlayer> SelectPlayers(List<Type> types)
@@ -91,6 +93,10 @@ namespace Blokus
                             Console.CursorLeft = 0;
                             Console.Write(indent + string.Format("Enter the {0}'s name: ", types[iPress - 1].Name));
                             string name = Console.ReadLine();
+                            if (string.IsNullOrEmpty(name))
+                            {
+                                name = types[iPress - 1].Name + " " + nextId;
+                            }
                             IBlokusPlayer p = (IBlokusPlayer)Activator.CreateInstance(types[iPress - 1]);
                             p.Name = name;
                             p.Initialize(nextId);

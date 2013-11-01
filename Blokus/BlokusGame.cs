@@ -26,8 +26,11 @@ namespace Blokus
             mPlayers = pPlayers;
             //Shuffle(mPlayers);
             mPlayerStates = mPlayers.Select(a => new BlokusPlayerState {Player = a, Pieces = PieceFactory.GetPieces(), PassLastTurn = false}).ToList();
+<<<<<<< HEAD
 
             
+=======
+>>>>>>> 2c59a4cd73a6a5c731c93b637e3d45907a0a196e
         }
 
         public void PlayGame()
@@ -57,12 +60,14 @@ namespace Blokus
             if (!currentPlayerState.PassLastTurn)
             {
                 // Time limit? 2 sec
-                BlokusGameState playerState = new BlokusGameState(mGameState, currentPlayerState.Pieces);
+                BlokusGameState playerState = new BlokusGameState(mGameState, new List<IPiece>(currentPlayerState.Pieces));
                 BlokusGameState newState = currentPlayerState.Player.PlayRound(playerState);
-
+                
+                // TODO Need to stop user from hacking the AvailableMoves list.
                 //validate successful, removes piece from player's available pieces, saves game state
                 if (mValidator.Validate(currentPlayerState.Player, newState, playerState))
                 {
+                    // We should calculate the new pieces... cannot trust (expect) player to return correctly
                     currentPlayerState.Pieces = newState.AvailablePieces;
                     mGameState = newState.BlokusBoard;
 
