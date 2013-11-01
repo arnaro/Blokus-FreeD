@@ -48,6 +48,10 @@ namespace Blokus
 
         public bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate)
         {
+            return Validate(player, newState, oldstate, true);
+        }
+        public bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate, bool deletePiece)
+        {
             if (IsCorrectPlayerOnEmptySpace(player, newState, oldstate) && IsCornerToCorner(player, newState, oldstate))
             {
                 return CheckAndPlacePiece(newState, oldstate);

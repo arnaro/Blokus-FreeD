@@ -16,5 +16,8 @@ namespace Blokus
         public byte[] BlokusBoard { get; private set; }
 
         public IList<IPiece> AvailablePieces { get; set; }
+
+        public IList<BlokusMove> Moves { get; set; } 
     }
+
 }
