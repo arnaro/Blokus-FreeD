@@ -9,8 +9,8 @@ namespace Blokus
 {
     public interface IGameValidator
     {
-        bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate);
-        bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate, bool performMove);
+        bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate);
+        bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate, bool performMove);
     }
 
     public class ValidatorFactory
@@ -20,29 +20,30 @@ namespace Blokus
             return new GameValidator();
         }
     }
+
     internal class GameValidator : IGameValidator
     {
-        public bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate)
+        public bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate)
         {
-            return Validate(player, newState, oldstate, true);
+            return Validate(playerId, newState, oldstate, true);
         }
 
-        public bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate, bool performMove)
+        public bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate, bool performMove)
         {
-            if (IsCorrectPlayerOnEmptySpace(player, newState, oldstate) && IsCornerToCorner(player, newState, oldstate))
+            if (IsCorrectPlayerOnEmptySpace(playerId, newState, oldstate) && IsCornerToCorner(playerId, newState, oldstate))
             {
                 return CheckAndPlacePiece(newState, oldstate, performMove);
             }
             return false;
         }
 
-        public bool IsCorrectPlayerOnEmptySpace(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldState)
+        public bool IsCorrectPlayerOnEmptySpace(int playerId, BlokusGameState newState, BlokusGameState oldState)
         {
             List<byte> diff = newState.BlokusBoard.Select((a, i) => (byte)(a - oldState.BlokusBoard[i])).ToList();
-            return diff.All(a => a == 0 || a == player.Id);
+            return diff.All(a => a == 0 || a == playerId);
         }
 
-        public bool IsCornerToCorner(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldState)
+        public bool IsCornerToCorner(int playerId, BlokusGameState newState, BlokusGameState oldState)
         {
             int howManyPer = (int)Math.Sqrt(newState.BlokusBoard.Length);
             var diff = newState.BlokusBoard.Select((a, i) => new
@@ -50,9 +51,26 @@ namespace Blokus
                 X = i % howManyPer,
                 Y = i / howManyPer,
                 Value = (byte)(a - oldState.BlokusBoard[i])
-            }).Where(a => a.Value == player.Id);
+            }).Where(a => a.Value == playerId);
 
             bool hasAtLeastOneCorner = false;
+
+            // First piece
+            if (oldState.AvailablePieces.Count == 21)
+            {
+                switch (playerId)
+                {
+                    case 1:
+                        return (newState.BlokusBoard[0] == playerId);
+                    case 2:
+                        return (newState.BlokusBoard[19] == playerId);
+                    case 3:
+                        return (newState.BlokusBoard[newState.BlokusBoard.Length - 1] == playerId);
+                    case 4:
+                        return (newState.BlokusBoard[newState.BlokusBoard.Length - 20] == playerId);
+                }
+            }
+
             foreach (var coord in diff)
             {
                 for (int x = -1; x <= 1; x++)
@@ -66,7 +84,7 @@ namespace Blokus
                         {
                             int newIndex = tempx + tempy * howManyPer;
                             byte oldValue = oldState.BlokusBoard[newIndex];
-                            if (oldValue == player.Id)
+                            if (oldValue == playerId)
                             {
                                 if (x == 0 || y == 0)
                                 {

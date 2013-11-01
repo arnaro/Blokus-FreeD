@@ -6,7 +6,7 @@ namespace RandomPlayer
 {
     public class RandomPlayer : BlokusBasePlayer
     {
-        public override BlokusGameState PlayRound(BlokusGameState gamestate)
+        public override BlokusMove PlayRound(IBlokusGameState gamestate)
         {
             IList<BlokusMove> AvailableMoves = gamestate.GetAvailableMoves(Id);
             if (AvailableMoves.Count == 0)
@@ -14,7 +14,7 @@ namespace RandomPlayer
                 return gamestate;
             }
             Random r = new Random();
-            return new BlokusGameState(AvailableMoves[r.Next(AvailableMoves.Count)].BlokusBoard);
+            return new BlokusMove(AvailableMoves[r.Next(AvailableMoves.Count)].BlokusBoard);
         }
     }
 }
