@@ -21,12 +21,9 @@ namespace Blokus
             mGameState = new byte[mColumns * mRows];
 
             //AddRandomData();
-
             mPlayers = pPlayers;
             //Shuffle(mPlayers);
             mPlayerStates = mPlayers.Select(a => new BlokusPlayerState {Player = a, Pieces = PieceFactory.GetPieces(), PassLastTurn = false}).ToList();
-
-
         }
 
         public void PlayGame()

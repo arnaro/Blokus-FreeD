@@ -296,6 +296,22 @@ namespace Blokus
             bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
         }
+
+        [Test]
+        public void FindCornersTest()
+        {
+            BlokusGameState state = new BlokusGameState(new byte[]
+                {
+                    1, 1, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0
+                }, null );
+
+            List<int> expectedCorners = new List<int>{8,10};
+
+            Assert.AreEqual(expectedCorners, state.GetCorners(1));
+        }
     }
 
     public class BlockusUnitTestPlayer : IBlokusPlayer
