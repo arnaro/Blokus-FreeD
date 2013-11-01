@@ -7,13 +7,14 @@ namespace RandomPlayer
     {
         public override BlokusGameState PlayRound(BlokusGameState gamestate)
         {
-            if (gamestate.Moves.Count == 0)
-            {
-                return gamestate;
-            }
+            //if (gamestate..Moves.Count == 0)
+            //{
+            //    return gamestate;
+            //}
 
-            Random r = new Random();
-            return new BlokusGameState(gamestate.Moves[r.Next(gamestate.Moves.Count)].BlokusBoard);
+            //Random r = new Random();
+            //return new BlokusGameState(gamestate.Moves[r.Next(gamestate.Moves.Count)].BlokusBoard);
+            return gamestate;
         }
     }
 }

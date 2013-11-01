@@ -201,7 +201,7 @@ namespace Blokus.Model
                 {
                     for (int j = 0; j < x.GetLength(0); j++)
                     {
-                        if (x[j, i] != y[j, i])
+                        if ((x[j, i] == 0) != (y[j, i] == 0))
                         {
                             return false;
                         }
