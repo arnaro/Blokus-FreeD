@@ -17,7 +17,6 @@ namespace Blokus
 
         public IList<IPiece> AvailablePieces { get; set; }
 
-        public IList<BlokusMove> Moves { get; set; } 
+        public IList<BlokusMove> Moves { get; set; }
     }
-
 }
