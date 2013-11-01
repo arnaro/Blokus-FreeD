@@ -43,8 +43,13 @@ namespace Blokus
             else
             {
                 Console.WriteLine("Game over");
+                Console.WriteLine();
+
+                // WINNER IS!!
+                List<IBlokusPlayer> winners = g.GetWinners();
+                Console.WriteLine("WINNER(S)");
+                winners.ForEach(a=> Console.WriteLine(a.Name));
             }
-            // TODO WINNER IS!!
             Console.ReadKey();
         }
 

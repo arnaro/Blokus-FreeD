@@ -207,6 +207,29 @@ namespace Blokus
             return mPlayerStates.All(a => a.PassLastTurn);
         }
 
+        public void PrintScore()
+        {
+            var scoreList = mGameState.Where(a=> a > 0).GroupBy(a => a).Select(a => new {Id = a.Key, Score = a.Count()}).OrderByDescending(a => a.Score).ToList();
+            
+            mPlayers.ForEach(a => Console.WriteLine(a.Name + " " + ((scoreList.SingleOrDefault(b => b.Id == a.Id) == null) ? 0 : scoreList.Single(b => b.Id == a.Id).Score)));
+
+            Console.SetCursorPosition(0, Console.CursorTop - scoreList.Count);
+        }
+
+        public List<IBlokusPlayer> GetWinners()
+        {
+            if (IsGameOver())
+            {
+                var scoreList = mGameState.Where(a => a > 0).GroupBy(a => a).Select(a => new { Id = a.Key, Score = a.Count() }).OrderByDescending(a => a.Score).ToList();
+                if (scoreList.Count > 0)
+                {
+                    int max = scoreList.Max(a => a.Score);
+                    return scoreList.Where(a => a.Score == max).Select(a => mPlayers.Single(b => b.Id == a.Id)).ToList();
+                }
+            }
+            return new List<IBlokusPlayer>();
+        }
+
         public void PrintGameState()
         {
             Console.ResetColor();
@@ -233,6 +256,8 @@ namespace Blokus
 
             Console.CursorLeft = 0;
             Console.CursorTop = mRows + 1;
+
+            PrintScore();
         }
 
         private ConsoleColor GetColor(int number)

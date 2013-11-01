@@ -14,13 +14,13 @@ namespace Blokus
     public class BlokusGameTests
     {
         private BlokusGame bg;
-        private List<IBlokusPlayer> players;
+        private List<BlockusUnitTestPlayer> players;
 
         [SetUp]
         public void setup()
         {
-            players = new List<IBlokusPlayer> { new BlockusUnitTestPlayer { Id = 1 }, new BlockusUnitTestPlayer { Id = 2 }, new BlockusUnitTestPlayer { Id = 3 }, new BlockusUnitTestPlayer { Id = 4 } };
-            bg = new BlokusGame(players);
+            players = new List<BlockusUnitTestPlayer> { new BlockusUnitTestPlayer { Id = 1 }, new BlockusUnitTestPlayer { Id = 2 }, new BlockusUnitTestPlayer { Id = 3 }, new BlockusUnitTestPlayer { Id = 4 } };
+            bg = new BlokusGame(players.Cast<IBlokusPlayer>().ToList());
         }
 
         [Test]
@@ -106,6 +106,44 @@ namespace Blokus
 
             Assert.AreEqual(true, result);
         }
+        
+        [Test]
+        public void TestPlayerHacking()
+        {
+            // setup next player to cheat
+            players[0].next_available_pieces = new List<IPiece>();
+            bg.NextMove();
+            // exception?
+        }
+
+        [Test]
+        public void TestPlayerHackingPieces()
+        {
+            // setup next player to cheat
+            players[0].next_available_pieces = new List<IPiece>();
+            players[0].next_blokus_board = new byte[400];
+            for (int i = 0; i < 3; i++)
+            {
+                players[0].next_blokus_board[i] = 1;
+            }
+            bg.NextMove();
+            // exception?
+        }
+
+        public void TestFirstPiece()
+        {
+            // setup next player to cheat
+            players[0].next_available_pieces = new List<IPiece>();
+            players[0].next_blokus_board = new byte[400];
+            for (int i = 0; i < 3; i++)
+            {
+                players[0].next_blokus_board[i] = 1;
+            }
+            bg.NextMove();
+            // exception?
+            
+        }
+
         [Test,Ignore("Fails, Need to handle no changes in code")]
         public void NoChanges()
         {
@@ -296,12 +334,26 @@ namespace Blokus
             bool corner = bg.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
         }
+
     }
 
     public class BlockusUnitTestPlayer : BlokusBasePlayer
     {
+        public List<IPiece> next_available_pieces= null;
+        public byte[] next_blokus_board = null;
+
         public override BlokusGameState PlayRound(BlokusGameState gamestate)
         {
+            if (next_available_pieces != null)
+            {
+                gamestate.AvailablePieces = next_available_pieces;
+            }
+
+            if (next_blokus_board != null)
+            {
+                gamestate = new BlokusGameState(next_blokus_board, gamestate.AvailablePieces);
+            }
+
             return gamestate;
         }
     }
