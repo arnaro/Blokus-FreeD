@@ -47,6 +47,23 @@ namespace Blokus
             }).Where(a => a.Value == player.Id);
 
             bool hasAtLeastOneCorner = false;
+
+            // First piece
+            if (oldState.AvailablePieces.Count == 21)
+            {
+                switch (player.Id)
+                {
+                    case 1:
+                        return (newState.BlokusBoard[0] == player.Id);
+                    case 2:
+                        return (newState.BlokusBoard[19] == player.Id);
+                    case 3:
+                        return (newState.BlokusBoard[newState.BlokusBoard.Length -1] == player.Id);
+                    case 4:
+                        return (newState.BlokusBoard[newState.BlokusBoard.Length - 20] == player.Id);
+                }
+            }
+
             foreach (var coord in diff)
             {
                 for (int x = -1; x <= 1; x++)

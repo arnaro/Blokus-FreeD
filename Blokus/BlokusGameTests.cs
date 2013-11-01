@@ -131,18 +131,49 @@ namespace Blokus
             // exception?
         }
 
+        [Test]
         public void TestFirstPiece()
         {
-            // setup next player to cheat
-            players[0].next_available_pieces = new List<IPiece>();
-            players[0].next_blokus_board = new byte[400];
+            Validator validator = new Validator();
+
+            byte[] oldgamestate = new byte[400];
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
+
+            byte[] gamestate = new byte[400];
             for (int i = 0; i < 3; i++)
             {
-                players[0].next_blokus_board[i] = 1;
+                gamestate[i] = 1;
             }
-            bg.NextMove();
-            // exception?
-            
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+
+            bool isOk = validator.Validate(players[0], newstate, oldstate);
+            Assert.AreEqual(true, isOk);
+        }
+        [Test]
+        public void TestFirstPieceWrongPlace()
+        {
+            Validator validator = new Validator();
+
+            byte[] oldgamestate = new byte[400];
+            BlokusGameState oldstate = new BlokusGameState(oldgamestate, PieceFactory.GetPieces());
+
+            byte[] gamestate = new byte[400];
+            for (int i = 17; i < 20; i++)
+            {
+                gamestate[i] = 1;
+            }
+            BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
+
+            bool isOk = validator.Validate(players[0], newstate, oldstate);
+            Assert.AreEqual(false, isOk);
+
+            // Change to player2... who should work
+            for (int i = 17; i < 20; i++)
+            {
+                gamestate[i] = 2;
+            }
+            isOk = validator.Validate(players[1], newstate, oldstate);
+            Assert.AreEqual(true, isOk);
         }
 
         [Test,Ignore("Fails, Need to handle no changes in code")]
@@ -167,8 +198,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
             bool isOnTop = validator.IsCorrectPlayerOnEmptySpace(players[0], newState, oldState);
             Assert.AreEqual(true, isOnTop);
@@ -179,8 +210,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState newState = new BlokusGameState(new byte[] { 2, 2, 2, 2,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 }, null);
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 2, 1, 2, 2,   0, 1, 0, 0,   0, 1, 0, 0,   0, 1, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 2, 2, 2, 2,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 });
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 2, 1, 2, 2,   0, 1, 0, 0,   0, 1, 0, 0,   0, 1, 0, 0 });
 
             bool isOnTop = validator.IsCorrectPlayerOnEmptySpace(players[0], newState, oldState);
             Assert.AreEqual(false, isOnTop);
@@ -191,8 +222,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
             bool isOnTop = validator.IsCorrectPlayerOnEmptySpace(players[0], newState, oldState);
             Assert.AreEqual(true, isOnTop);
@@ -203,8 +234,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
             bool isOnTop = validator.IsCorrectPlayerOnEmptySpace(players[0], newState, oldState);
             Assert.AreEqual(false, isOnTop);
@@ -213,8 +244,7 @@ namespace Blokus
         [Test]
         public void TestScore()
         {
-            BlokusGameState state = new BlokusGameState(new byte[] {2, 2, 2, 1, 2, 0, 0, 0, 0, 3, 0, 0, 1, 1, 0, 0},
-                                                        null);
+            BlokusGameState state = new BlokusGameState(new byte[] {2, 2, 2, 1, 2, 0, 0, 0, 0, 3, 0, 0, 1, 1, 0, 0});
             Assert.AreEqual(3, bg.GetScore(1, state));
             Assert.AreEqual(4, bg.GetScore(2, state));
             Assert.AreEqual(1, bg.GetScore(3, state));
@@ -225,8 +255,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   1, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   1, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(true, corner);
@@ -237,8 +267,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 1 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 1 });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
@@ -249,8 +279,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
@@ -260,8 +290,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0,  0, 0, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0,  0, 0, 1, 0,  0, 1, 0, 1,  0, 1, 1, 1 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0,  0, 0, 1, 0,  0, 0, 0, 0,  0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0,  0, 0, 1, 0,  0, 1, 0, 1,  0, 1, 1, 1 });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(true, corner);
@@ -272,8 +302,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1 });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
@@ -284,8 +314,8 @@ namespace Blokus
         {
             Validator validator = new Validator();
 
-            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
-            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, null);
+            BlokusGameState oldState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0 });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
@@ -302,14 +332,14 @@ namespace Blokus
                 3, 3, 1, 2,
                 3, 0, 2, 2,
                 3, 0, 0, 0
-            }, null);
+            });
             BlokusGameState newState = new BlokusGameState(new byte[]
             {
                 1, 1, 1, 2,
                 3, 3, 1, 2,
                 3, 1, 2, 2,
                 3, 1, 1, 1
-            }, null);
+            });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(true, corner);
@@ -327,14 +357,14 @@ namespace Blokus
                 3, 3, 1, 2,
                 3, 0, 2, 2,
                 3, 0, 0, 0
-            }, null);
+            });
             BlokusGameState newState = new BlokusGameState(new byte[]
             {
                 1, 1, 1, 2,
                 3, 3, 1, 2,
                 3, 0, 2, 2,
                 3, 1, 1, 1
-            }, null);
+            });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
@@ -351,14 +381,14 @@ namespace Blokus
                 3, 0, 1, 0,
                 3, 0, 2, 0,
                 3, 0, 0, 0
-            }, null);
+            });
             BlokusGameState newState = new BlokusGameState(new byte[]
             {
                 1, 1, 1, 2,
                 3, 0, 1, 1,
                 3, 0, 2, 1,
                 3, 0, 0, 0
-            }, null);
+            });
 
             bool corner = validator.IsCornerToCorner(players[0], newState, oldState);
             Assert.AreEqual(false, corner);
@@ -373,7 +403,7 @@ namespace Blokus
                     0, 1, 0, 0,
                     0, 0, 0, 0,
                     0, 0, 0, 0
-                }, null );
+                } );
 
             List<int> expectedCorners = new List<int>{8,10};
 
