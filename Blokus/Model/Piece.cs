@@ -8,6 +8,8 @@ namespace Blokus.Model
 {
     class Piece : IPiece
     {
+        public static readonly byte CONNECTION_POINT_VALUE = 9;
+
         protected byte[,] baseForm;
         private int size;  //Danger! Will change after Trim
 
@@ -145,7 +147,7 @@ namespace Blokus.Model
             {
                 for (int j = 0; j < size; ++j)
                 {
-                    stringBuilder.Append(baseForm[i, j] == 1 ? "X" : " ");
+                    stringBuilder.Append(baseForm[i, j] == 1 || baseForm[i, j] == Piece.CONNECTION_POINT_VALUE ? "X" : " ");
                 }
                 stringBuilder.Append(Environment.NewLine);
             }
@@ -199,7 +201,7 @@ namespace Blokus.Model
                 {
                     for (int j = 0; j < x.GetLength(0); j++)
                     {
-                        if (x[j, i] != y[j, i])
+                        if ((x[j, i] == 0) != (y[j, i] == 0))
                         {
                             return false;
                         }

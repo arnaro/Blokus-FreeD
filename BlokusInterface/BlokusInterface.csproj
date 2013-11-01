@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlokusGameState.cs" />
+    <Compile Include="BlokusMove.cs" />
     <Compile Include="BlokusPlayer.cs" />
     <Compile Include="IPiece.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

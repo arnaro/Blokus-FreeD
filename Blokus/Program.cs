@@ -27,7 +27,7 @@ namespace Blokus
 
             char val = Console.ReadKey(true).KeyChar;
             
-            while (val == 'n' || ! g.IsGameOver())
+            while (val == 'n' && !g.IsGameOver())
             {
                 Console.CursorLeft = 0;
                 Console.CursorTop = 0;
@@ -44,6 +44,8 @@ namespace Blokus
             {
                 Console.WriteLine("Game over");
             }
+            // TODO WINNER IS!!
+            Console.ReadKey();
         }
 
         public static List<IBlokusPlayer> SelectPlayers(List<Type> types)
@@ -61,7 +63,7 @@ namespace Blokus
                 {
                     int nextId = 1;
                     Console.Clear();
-                    Console.WriteLine(" ===== Blokus Player selection ===== ");
+                    Console.WriteLine(" ===== Blokus player selection ===== ");
 
                     Console.WriteLine(string.Format("Current players:"));
                     if (players.Count == 0)
@@ -91,6 +93,10 @@ namespace Blokus
                             Console.CursorLeft = 0;
                             Console.Write(indent + string.Format("Enter the {0}'s name: ", types[iPress - 1].Name));
                             string name = Console.ReadLine();
+                            if (string.IsNullOrEmpty(name))
+                            {
+                                name = types[iPress - 1].Name + " " + nextId;
+                            }
                             IBlokusPlayer p = (IBlokusPlayer)Activator.CreateInstance(types[iPress - 1]);
                             p.Name = name;
                             p.Initialize(nextId);
@@ -114,7 +120,7 @@ namespace Blokus
             List<Type> types = new List<Type>();
             string dir = Directory.GetCurrentDirectory();
             List<string> fileNames = Directory.GetFiles(dir, "*.dll").OrderBy(a => a).ToList();
-            foreach (string fileName in fileNames)
+            foreach (string fileName in fileNames.Where(a => !a.EndsWith("BlokusInterface.dll")))
             {
                 Assembly ass = Assembly.LoadFrom(fileName);
                 List<Type> parsers = ass.GetTypes().Where(a => a.IsClass && typeof(IBlokusPlayer).IsAssignableFrom(a)).ToList();

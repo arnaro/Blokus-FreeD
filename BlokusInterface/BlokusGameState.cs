@@ -20,6 +20,18 @@ namespace Blokus
             mRows = pRows;
         }
 
+        public BlokusGameState(byte[] pGameState)
+        {
+            BlokusBoard = pGameState;
+            AvailablePieces = new List<IPiece>();
+        }
+
+        public BlokusGameState(byte[] pGameState, IList<IPiece> pPieces)
+        {
+            BlokusBoard = pGameState;
+            AvailablePieces = pPieces;
+        }
+
         private int mColumns, mRows;
         public byte[] BlokusBoard { get; private set; }
         public IList<IPiece> AvailablePieces { get; set; }
@@ -72,5 +84,6 @@ namespace Blokus
         //{
         //    if(N % mRows == 0 || )
         //}
+
     }
 }
