@@ -364,8 +364,6 @@ namespace Blokus
             Assert.AreEqual(false, corner);
         }
 
-<<<<<<< HEAD
-=======
         [Test]
         public void FindCornersTest()
         {
@@ -381,7 +379,6 @@ namespace Blokus
 
             Assert.AreEqual(expectedCorners, state.GetCorners(1));
         }
->>>>>>> b46a26d8df075fe448ec9e56a4e295dd1c9984e6
     }
 
     public class BlockusUnitTestPlayer : BlokusBasePlayer
