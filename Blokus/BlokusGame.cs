@@ -169,7 +169,7 @@ namespace Blokus
 
         public void NextMove()
         {
-            mCurrentPlayerIndex = (mCurrentPlayerIndex + 1)%4;
+            mCurrentPlayerIndex = (mCurrentPlayerIndex + 1) % mPlayerStates.Count;
 
             BlokusPlayerState currentPlayerState = mPlayerStates[mCurrentPlayerIndex];
             if (!currentPlayerState.PassLastTurn)
@@ -190,8 +190,6 @@ namespace Blokus
                 {
                     currentPlayerState.PassLastTurn = true;
                 }
-                
-               
             }
         }
 

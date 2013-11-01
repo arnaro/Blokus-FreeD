@@ -61,7 +61,7 @@ namespace Blokus
                 {
                     int nextId = 1;
                     Console.Clear();
-                    Console.WriteLine(" ===== Blokus Player selection ===== ");
+                    Console.WriteLine(" ===== Blokus player selection ===== ");
 
                     Console.WriteLine(string.Format("Current players:"));
                     if (players.Count == 0)
@@ -114,7 +114,7 @@ namespace Blokus
             List<Type> types = new List<Type>();
             string dir = Directory.GetCurrentDirectory();
             List<string> fileNames = Directory.GetFiles(dir, "*.dll").OrderBy(a => a).ToList();
-            foreach (string fileName in fileNames)
+            foreach (string fileName in fileNames.Where(a => !a.EndsWith("BlokusInterface.dll")))
             {
                 Assembly ass = Assembly.LoadFrom(fileName);
                 List<Type> parsers = ass.GetTypes().Where(a => a.IsClass && typeof(IBlokusPlayer).IsAssignableFrom(a)).ToList();

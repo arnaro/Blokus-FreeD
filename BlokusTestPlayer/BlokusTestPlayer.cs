@@ -6,18 +6,11 @@ using Blokus;
 
 namespace BlokusTestPlayer
 {
-    public class BlokusTestPlayer : IBlokusPlayer
+    public class BlokusTestPlayer : BlokusBasePlayer
     {
-        public string Name { get; set; }
-        public int Id { get; set; }
-
-        public BlokusGameState PlayRound(BlokusGameState gamestate)
+        public override BlokusGameState PlayRound(BlokusGameState gamestate)
         {
             return gamestate;
-        }
-        public void Initialize(int playernumber)
-        {
-            Id = playernumber;
         }
     }
 }

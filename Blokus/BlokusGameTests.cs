@@ -298,21 +298,11 @@ namespace Blokus
         }
     }
 
-    public class BlockusUnitTestPlayer : IBlokusPlayer
+    public class BlockusUnitTestPlayer : BlokusBasePlayer
     {
-
-        public string Name { get; set; }
-
-        public int Id { get; set; }
-
-        public BlokusGameState PlayRound(BlokusGameState gamestate)
+        public override BlokusGameState PlayRound(BlokusGameState gamestate)
         {
             return gamestate;
-        }
-
-        public void Initialize(int playernumber)
-        {
-            Id = playernumber;
         }
     }
 }
