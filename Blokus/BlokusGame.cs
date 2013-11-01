@@ -26,11 +26,6 @@ namespace Blokus
             mPlayers = pPlayers;
             //Shuffle(mPlayers);
             mPlayerStates = mPlayers.Select(a => new BlokusPlayerState {Player = a, Pieces = PieceFactory.GetPieces(), PassLastTurn = false}).ToList();
-<<<<<<< HEAD
-
-            
-=======
->>>>>>> 2c59a4cd73a6a5c731c93b637e3d45907a0a196e
         }
 
         public void PlayGame()
