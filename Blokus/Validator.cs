@@ -7,14 +7,20 @@ using Blokus.Model;
 
 namespace Blokus
 {
-    class ValidatorFactory
+    public interface IGameValidator
     {
-        public static IValidator GetValidator()
+        bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate);
+        bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate, bool performMove);
+    }
+
+    public class ValidatorFactory
+    {
+        public static IGameValidator GetValidator()
         {
-            return new Validator();
+            return new GameValidator();
         }
     }
-    internal class Validator : IValidator
+    internal class GameValidator : IGameValidator
     {
         public bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate)
         {
@@ -148,9 +154,4 @@ namespace Blokus
 
     }
 
-    internal interface IValidator
-    {
-        bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate);
-        bool Validate(IBlokusPlayer player, BlokusGameState newState, BlokusGameState oldstate, bool performMove);
-    }
 }

@@ -15,7 +15,7 @@ namespace Blokus
         private List<IBlokusPlayer> mPlayers;
         private List<BlokusPlayerState> mPlayerStates; 
         private int mCurrentPlayerIndex = -1;
-        private IValidator mValidator = ValidatorFactory.GetValidator();
+        private IGameValidator mGameValidator = ValidatorFactory.GetValidator();
 
         public BlokusGame(List<IBlokusPlayer> pPlayers)
         {
@@ -59,7 +59,7 @@ namespace Blokus
                 
                 // TODO Need to stop user from hacking the AvailableMoves list.
                 //validate successful, removes piece from player's available pieces, saves game state
-                if (mValidator.Validate(currentPlayerState.Player, newState, playerState))
+                if (mGameValidator.Validate(currentPlayerState.Player, newState, playerState))
                 {
                     // We should calculate the new pieces... cannot trust (expect) player to return correctly
                     currentPlayerState.Pieces = newState.AvailablePieces;
