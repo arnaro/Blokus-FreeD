@@ -8,10 +8,12 @@ namespace RandomPlayer
     {
         public override BlokusMove PlayRound(IBlokusGameState gamestate)
         {
-            IList<BlokusMove> AvailableMoves = gamestate.GetAvailableMoves(Id);
+            //Todo fix when available moves is done
+            IList<BlokusMove> AvailableMoves = new List<BlokusMove>();//gamestate.GetAvailableMoves(Id);
             if (AvailableMoves.Count == 0)
             {
-                return gamestate;
+                //Todo fix when available moves is done
+                return null;
             }
             Random r = new Random();
             return new BlokusMove(AvailableMoves[r.Next(AvailableMoves.Count)].BlokusBoard);

@@ -56,15 +56,14 @@ namespace Blokus
                 // Time limit? 2 sec
                 BlokusGameState playerState = new BlokusGameState(mGameState, new List<IPiece>(currentPlayerState.Pieces));
                 BlokusMove move = currentPlayerState.Player.PlayRound(playerState);
-                BlokusGameState newState = new BlokusGameState(move.BlokusBoard, currentPlayerState.Pieces);
+                //BlokusGameState newState = new BlokusGameState(move.BlokusBoard, currentPlayerState.Pieces);
 
-                // TODO Need to stop user from hacking the AvailableMoves list.
-                //validate successful, removes piece from player's available pieces, saves game state
-                if (mGameValidator.Validate(currentPlayerState.Player.Id, newState, playerState))
+                if (mGameValidator.Validate(currentPlayerState.Player.Id, move, playerState))
                 {
-                    // We should calculate the new pieces... cannot trust (expect) player to return correctly
-                    currentPlayerState.Pieces = newState.AvailablePieces;
-                    mGameState = newState.BlokusBoard;
+                    //removing piece from available
+                    currentPlayerState.Pieces.Remove(move.Piece);
+                    //saving state
+                    mGameState = move.BlokusBoard;
 
                 }
                 //validate failed setting player's move as passed

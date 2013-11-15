@@ -9,8 +9,8 @@ namespace Blokus
 {
     public interface IGameValidator
     {
-        bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate);
-        bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate, bool performMove);
+        bool Validate(int playerId, BlokusMove move, BlokusGameState oldstate);
+
     }
 
     public class ValidatorFactory
@@ -23,30 +23,25 @@ namespace Blokus
 
     internal class GameValidator : IGameValidator
     {
-        public bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate)
+        public bool Validate(int playerId, BlokusMove move, BlokusGameState oldstate)
         {
-            return Validate(playerId, newState, oldstate, true);
-        }
-
-        public bool Validate(int playerId, BlokusGameState newState, BlokusGameState oldstate, bool performMove)
-        {
-            if (IsCorrectPlayerOnEmptySpace(playerId, newState, oldstate) && IsCornerToCorner(playerId, newState, oldstate))
+            if (IsCorrectPlayerOnEmptySpace(playerId, move, oldstate) && IsCornerToCorner(playerId, move, oldstate))
             {
-                return CheckAndPlacePiece(newState, oldstate, performMove);
+                return CheckPiecePlacement(move, oldstate);
             }
             return false;
         }
 
-        public bool IsCorrectPlayerOnEmptySpace(int playerId, BlokusGameState newState, BlokusGameState oldState)
+        public bool IsCorrectPlayerOnEmptySpace(int playerId, BlokusMove move, BlokusGameState oldState)
         {
-            List<byte> diff = newState.BlokusBoard.Select((a, i) => (byte)(a - oldState.BlokusBoard[i])).ToList();
+            List<byte> diff = move.BlokusBoard.Select((a, i) => (byte)(a - oldState.BlokusBoard[i])).ToList();
             return diff.All(a => a == 0 || a == playerId);
         }
 
-        public bool IsCornerToCorner(int playerId, BlokusGameState newState, BlokusGameState oldState)
+        public bool IsCornerToCorner(int playerId, BlokusMove move, BlokusGameState oldState)
         {
-            int howManyPer = (int)Math.Sqrt(newState.BlokusBoard.Length);
-            var diff = newState.BlokusBoard.Select((a, i) => new
+            int howManyPer = (int)Math.Sqrt(move.BlokusBoard.Length);
+            var diff = move.BlokusBoard.Select((a, i) => new
             {
                 X = i % howManyPer,
                 Y = i / howManyPer,
@@ -61,13 +56,13 @@ namespace Blokus
                 switch (playerId)
                 {
                     case 1:
-                        return (newState.BlokusBoard[0] == playerId);
+                        return (move.BlokusBoard[0] == playerId);
                     case 2:
-                        return (newState.BlokusBoard[19] == playerId);
+                        return (move.BlokusBoard[19] == playerId);
                     case 3:
-                        return (newState.BlokusBoard[newState.BlokusBoard.Length - 1] == playerId);
+                        return (move.BlokusBoard[move.BlokusBoard.Length - 1] == playerId);
                     case 4:
-                        return (newState.BlokusBoard[newState.BlokusBoard.Length - 20] == playerId);
+                        return (move.BlokusBoard[move.BlokusBoard.Length - 20] == playerId);
                 }
             }
 
@@ -102,12 +97,12 @@ namespace Blokus
             return hasAtLeastOneCorner;
         }
 
-        public bool CheckAndPlacePiece(BlokusGameState newState, BlokusGameState oldstate, bool performMove)
+        public bool CheckPiecePlacement(BlokusMove move, BlokusGameState oldstate)
         {
             byte[] changes = new byte[400];
             for (int i = 0; i < 400; i++)
             {
-                if (oldstate.BlokusBoard[i] != newState.BlokusBoard[i])
+                if (oldstate.BlokusBoard[i] != move.BlokusBoard[i])
                 {
                     changes[i] = 1;
                 }
@@ -149,21 +144,21 @@ namespace Blokus
                 }
             }
 
-            return IsPiece(newState, new Piece(piece), performMove);
+            return IsPiece(move,oldstate.AvailablePieces.ToList(), new Piece(piece));
         }
 
-        public bool IsPiece(BlokusGameState gamestate, IPiece piece, bool performMove)
+        public bool IsPiece(BlokusMove move,List<IPiece> availablepieces, IPiece piece)
         {
-            // bool found = false;
-            foreach (IPiece checkpiece in gamestate.AvailablePieces)
+            //Piece declared is same as piece placed
+            if (move.Piece.Equals(piece))
             {
-                if (checkpiece.Equals(piece))
+                //piece is available
+                foreach (IPiece checkpiece in availablepieces)
                 {
-                    if (performMove)
+                    if (checkpiece.Equals(piece))
                     {
-                        gamestate.AvailablePieces.Remove(checkpiece);
+                        return true;
                     }
-                    return true;
                 }
             }
             return false;

@@ -49,7 +49,7 @@ namespace Blokus
                         foreach (BlokusMove move in moves)
                         {
                             //!TODO change validator.Validate to use move instead of GameState and dont solve the remove piece in validate
-                            if (validator.Validate(playerId, move, BlokusBoard, false))
+                            if (validator.Validate(playerId, move, this))
                             {
                                 Results.Add(move);
                             }
