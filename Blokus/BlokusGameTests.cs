@@ -406,8 +406,37 @@ namespace Blokus
                 } );
 
             List<int> expectedCorners = new List<int>{8,10};
-
             Assert.AreEqual(expectedCorners, state.GetCorners(1));
+
+            //-------
+             state = new BlokusGameState(new byte[]
+                {
+                    1, 1, 0, 0, 0, 0,
+                    0, 1, 0, 0, 0, 0,
+                    1, 0, 0, 0, 0, 0,
+                    1, 1, 1, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0
+                } );
+
+            expectedCorners = new List<int>{15,27};
+            Assert.AreEqual(expectedCorners, state.GetCorners(1));
+
+            //-------
+            state = new BlokusGameState(new byte[]
+                {
+                    1, 1, 0, 0, 0, 0,
+                    0, 1, 0, 0, 0, 0,
+                    0, 1, 1, 2, 2, 0,
+                    0, 0, 0, 0, 2, 2,
+                    0, 0, 0, 0, 2, 0,
+                    0, 0, 0, 2, 2, 2,
+                } );
+
+            var expectedCorners1 = new List<int>{9, 21, 18};
+            var expectedCorners2 = new List<int>{8, 11, 20, 26};
+            Assert.IsTrue(expectedCorners1.All(a => state.GetCorners(1).Contains(a)));
+            Assert.IsTrue(expectedCorners2.All(a => state.GetCorners(2).Contains(a)));
         }
     }
 
