@@ -19,6 +19,13 @@ namespace Blokus.Model
             size = (int) Math.Sqrt(baseForm.Length);
         }
 
+        public int GetScore()
+        {
+            return (from byte item in baseForm
+             where item > 0
+             select item).Count();
+        }
+
         public List<byte[,]> ListRoations()
         {
             var array = new List<byte[,]>(8);

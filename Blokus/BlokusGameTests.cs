@@ -38,6 +38,47 @@ namespace Blokus
             Assert.IsTrue(bg.IsGameOver());
         }
 
+        [Test]
+        public void ScoreGameNoMoves()
+        {
+            int score = bg.ScoreGame(1);
+            Assert.IsTrue(score == -89);
+            score = bg.ScoreGame(2);
+            Assert.IsTrue(score == -89);
+            score = bg.ScoreGame(3);
+            Assert.IsTrue(score == -89);
+            score = bg.ScoreGame(4);
+            Assert.IsTrue(score == -89);
+        }
+
+        [Test]
+        public void ScoreGameAllPiecesPlaced()
+        {
+            bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c=>c.GetScore()).Select(a=> new BlokusMove(new byte[400]){Piece = a}).ToList();
+            bg.mPlayerStates[0].Pieces = new List<IPiece>();
+            int score = bg.ScoreGame(1);
+            Assert.IsTrue(score == 20);
+            bg.mPlayers[0].Moves = bg.mPlayers[0].Moves.OrderBy(c => c.Piece.GetScore()).ToList();
+            score = bg.ScoreGame(1);
+            Assert.IsTrue(score == 15);
+        }
+
+        [Test]
+        public void ScoreGamePartiallyPlaced()
+        {
+            int total = 21;
+            int placed = 10;
+            bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c => c.GetScore()).Select(a => new BlokusMove(new byte[400]) { Piece = a }).Take(placed).ToList();
+            bg.mPlayerStates[0].Pieces = PieceFactory.GetPieces().OrderBy(c => c.GetScore()).Take(total-placed).ToList();
+            int score = bg.ScoreGame(1);
+            Assert.IsTrue(score == -39);
+            placed = 20;
+            bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c => c.GetScore()).Select(a => new BlokusMove(new byte[400]) { Piece = a }).Take(placed).ToList();
+            bg.mPlayerStates[0].Pieces = PieceFactory.GetPieces().OrderBy(c => c.GetScore()).Take(total - placed).ToList();
+            score = bg.ScoreGame(1);
+            Assert.IsTrue(score == -1);
+        }
+
 
         [Test]
         public void PieceAvailable()
