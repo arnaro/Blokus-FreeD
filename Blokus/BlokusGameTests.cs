@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Drawing;
+using Blokus.Model;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -454,6 +456,67 @@ namespace Blokus
             var expectedCorners2 = new List<int>{8, 11, 20, 26};
             Assert.IsTrue(expectedCorners1.All(a => state.GetCorners(1).Contains(a)));
             Assert.IsTrue(expectedCorners2.All(a => state.GetCorners(2).Contains(a)));
+        }
+
+        [Test]
+        public void FindAvailableMovesTest()
+        {
+            var originalBoard = new byte[]
+                {
+                    1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0,
+                    0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+                    0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2,
+                    0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0,
+                    0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
+                    0, 0, 0, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 2, 0, 0, 0, 2,
+                    1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0,
+                    0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+                    0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2,
+                    0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0,
+                    1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0,
+                    0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+                    0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2,
+                    0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0,
+                    0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
+                    0, 0, 0, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 2, 0, 0, 0, 2,
+                    1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0,
+                    0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+                    0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2,
+                    0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0,
+                };
+
+            var gameBoard = new BlokusGameState(originalBoard);
+
+            var piece = new byte[1,1];
+            piece[0, 0] = 9;
+
+            gameBoard.AvailablePieces.Add(new Piece(piece));
+
+            BlokusMove move = gameBoard.TryPlacePieceOnCorner(piece, new Point(0, 3), new Point(0, 0), 1);
+            Assert.AreEqual(1,move.BlokusBoard[60]);
+
+
+            gameBoard = new BlokusGameState(originalBoard);
+            var piece2 = new byte[3,2];
+            piece2[0, 0] = 9;
+            piece2[1, 0] = 1;
+            piece2[2, 0] = 9;
+                 
+            piece2[0, 1] = 9;
+            piece2[1, 1] = 0;
+            piece2[2, 1] = 0;
+
+            gameBoard.AvailablePieces.Add(new Piece(piece2));
+
+            move = gameBoard.TryPlacePieceOnCorner(piece2, new Point(2, 1), new Point(0, 1), 2);
+
+            Assert.AreEqual(2, move.BlokusBoard[2]);
+            Assert.AreEqual(2, move.BlokusBoard[3]);
+            Assert.AreEqual(2, move.BlokusBoard[4]);
+
+
+
+
         }
     }
 

@@ -161,7 +161,10 @@ namespace Blokus.Model
                 return false;
             }
             Piece pieceA = this;
-            Piece pieceB = obj as Piece;
+            Piece pieceB = (obj as Piece);
+
+            pieceA = new Piece(pieceA.Trim(pieceA.baseForm));
+            pieceB = new Piece(pieceB.Trim(pieceB.baseForm));
 
             var rotationsA = pieceA.ListRoations();
             var rotationsB = pieceB.ListRoations();

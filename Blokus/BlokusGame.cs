@@ -44,8 +44,6 @@ namespace Blokus
             }
         }
 
-
-
         public void NextMove()
         {
             mCurrentPlayerIndex = (mCurrentPlayerIndex + 1) % mPlayerStates.Count;

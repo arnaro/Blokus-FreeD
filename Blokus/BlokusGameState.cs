@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
+using Blokus.Model;
 
 namespace Blokus
 {
@@ -39,7 +41,7 @@ namespace Blokus
 
         public IList<BlokusMove> GetAvailableMoves(int playerId)
         {
-            IGameValidator validator = ValidatorFactory.GetValidator();
+            
             List<int> corners = GetCorners(playerId);
             IList<BlokusMove> Results = new List<BlokusMove>();
 
@@ -50,14 +52,10 @@ namespace Blokus
                 {
                     foreach (int corner in corners)
                     {
-                        IList<BlokusMove> moves = PlacePice(rotation, corner);
+                        IList<BlokusMove> moves = PlacePiece(rotation, corner, playerId);
                         foreach (BlokusMove move in moves)
                         {
-                            //!TODO change validator.Validate to use move instead of GameState and dont solve the remove piece in validate
-                            if (validator.Validate(playerId, move, this))
-                            {
-                                Results.Add(move);
-                            }
+                            Results.Add(move);
                         }
                     }
                 }
@@ -65,12 +63,75 @@ namespace Blokus
             return new List<BlokusMove>();
         }
 
-        public IList<BlokusMove> PlacePice(byte[,] rotation, int corner)
+        public IList<BlokusMove> PlacePiece(byte[,] rotation, int corner, int playerId)
         {
-            //!TODO make list of all possible moves 
-            return new List<BlokusMove>();
+            int cornerX = corner%mRows;
+            int cornerY = (corner - cornerX)/mRows;
+            Point cornerPoint = new Point(cornerX,cornerY);
+            List<BlokusMove> availableMoves = new List<BlokusMove>();
+
+            for (int x = 0; x <= rotation.GetUpperBound(0); x++)
+            {
+                for (int y = 0; y <= rotation.GetUpperBound(1); y++)
+                {
+                    if (rotation[x, y] == 9)
+                    {
+                        BlokusMove move = TryPlacePieceOnCorner(rotation, cornerPoint, new Point(x,y), playerId);
+                        if (move != null)
+                        {
+                            availableMoves.Add(move);
+                        }
+                    }
+                }
+            }
+            return availableMoves;
         }
 
+        public BlokusMove TryPlacePieceOnCorner(byte[,] rotation, Point targetPoint, Point piecePoint, int playerId)
+        {
+            IGameValidator validator = ValidatorFactory.GetValidator();
+            int offsetX = targetPoint.X - piecePoint.X;
+            int offsetY = targetPoint.Y - piecePoint.Y;
+
+            BlokusMove move = new BlokusMove(BlokusBoard);
+
+            //byte[,] board = Get2DBoard();
+
+            for (int x = 0; x <= rotation.GetUpperBound(0); x++)
+            {
+                for (int y = 0; y <= rotation.GetUpperBound(1); y++)
+                {
+                    if (rotation[x, y] != 0)
+                    {
+                        int tempX = offsetX + x;
+                        int tempY = offsetY + y;
+
+                        if(tempX >= mColumns || tempX < 0 || tempY >= mRows || tempY < 0)
+                        {
+                            return null;
+                        }
+
+                        move.BlokusBoard[tempX + tempY * mRows] = (byte)playerId;
+                    }
+                }
+            }
+            move.Piece = new Piece(rotation);
+            return validator.Validate(playerId, move, this) ? move : null;
+        }
+
+        private byte[,] Get2DBoard()
+        {
+            byte[,] board = new byte[mColumns,mRows];
+
+            for (int x = 0; x < mColumns; x++)
+            {
+                for (int y = 0; y < mRows; y++)
+                {
+                    board[x, y] = BlokusBoard[x + y*mRows];
+                }
+            }
+            return board;
+        }
 
         private int mColumns, mRows;
         public byte[] BlokusBoard { get; private set; }

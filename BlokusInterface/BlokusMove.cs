@@ -9,7 +9,13 @@ namespace Blokus
     {
         public BlokusMove(byte[] blokusBoard)
         {
-            BlokusBoard = blokusBoard;
+            BlokusBoard = new byte[blokusBoard.Length];
+            blokusBoard.CopyTo(BlokusBoard,0);
+        }
+
+        private BlokusMove()
+        {
+            
         }
 
         public byte[] BlokusBoard { get; private set; }
