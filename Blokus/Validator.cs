@@ -152,13 +152,9 @@ namespace Blokus
             //Piece declared is same as piece placed
             if (move.Piece.Equals(piece))
             {
-                //piece is available
-                foreach (IPiece checkpiece in availablepieces)
+                if (availablepieces.Contains(move.Piece))
                 {
-                    if (checkpiece.Equals(piece))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;

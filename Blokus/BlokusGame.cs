@@ -12,8 +12,8 @@ namespace Blokus
     {
         private int mColumns = 20, mRows = 20;
         private byte[] mGameState;
-        private List<IBlokusPlayer> mPlayers;
-        private List<BlokusPlayerState> mPlayerStates; 
+        public List<IBlokusPlayer> mPlayers;
+        public List<BlokusPlayerState> mPlayerStates; 
         private int mCurrentPlayerIndex = -1;
         private IGameValidator mGameValidator = ValidatorFactory.GetValidator();
 
@@ -82,11 +82,35 @@ namespace Blokus
             return mPlayerStates.All(a => a.PassLastTurn);
         }
 
+        public int ScoreGame(int playerId)
+        {
+            int score = 0;
+            BlokusPlayerState state = mPlayerStates.ToList().Where(a => a.Player.Id == playerId).FirstOrDefault();
+            if (state != null)
+            {
+                List<IPiece> remainingPieces = state.Pieces.ToList();
+                remainingPieces.ForEach(a =>
+                {
+                    score -= a.GetScore();
+                });
+                if (remainingPieces.Count() == 0)
+                {
+                    score += 15;
+                    BlokusMove lastmove = mPlayers.Where(b => b.Id == playerId).FirstOrDefault().Moves.Last();
+                    if (lastmove.Piece.Equals(PieceFactory.GetPieces().ElementAt(0)))
+                    {
+                        score += 5;
+                    }
+                }
+            }
+            return score;
+        }
+
         public void PrintScore()
         {
             var scoreList = mGameState.Where(a=> a > 0).GroupBy(a => a).Select(a => new {Id = a.Key, Score = a.Count()}).OrderByDescending(a => a.Score).ToList();
-            
-            mPlayers.ForEach(a => Console.WriteLine(a.Name + " " + ((scoreList.SingleOrDefault(b => b.Id == a.Id) == null) ? 0 : scoreList.Single(b => b.Id == a.Id).Score)));
+           
+            mPlayers.ForEach(a => Console.WriteLine(a.Name + " " + ScoreGame(a.Id)));
 
             Console.SetCursorPosition(0, Console.CursorTop - scoreList.Count);
         }

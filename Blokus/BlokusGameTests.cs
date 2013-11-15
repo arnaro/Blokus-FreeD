@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blokus.Model;
 
 namespace Blokus
 {
@@ -37,6 +38,47 @@ namespace Blokus
 
             bg.PlayGame();
             Assert.IsTrue(bg.IsGameOver());
+        }
+
+        [Test]
+        public void ScoreGameNoMoves()
+        {
+            int score = bg.ScoreGame(1);
+            Assert.IsTrue(score == -89);
+            score = bg.ScoreGame(2);
+            Assert.IsTrue(score == -89);
+            score = bg.ScoreGame(3);
+            Assert.IsTrue(score == -89);
+            score = bg.ScoreGame(4);
+            Assert.IsTrue(score == -89);
+        }
+
+        [Test]
+        public void ScoreGameAllPiecesPlaced()
+        {
+            bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c=>c.GetScore()).Select(a=> new BlokusMove(new byte[400]){Piece = a}).ToList();
+            bg.mPlayerStates[0].Pieces = new List<IPiece>();
+            int score = bg.ScoreGame(1);
+            Assert.IsTrue(score == 20);
+            bg.mPlayers[0].Moves = bg.mPlayers[0].Moves.OrderBy(c => c.Piece.GetScore()).ToList();
+            score = bg.ScoreGame(1);
+            Assert.IsTrue(score == 15);
+        }
+
+        [Test]
+        public void ScoreGamePartiallyPlaced()
+        {
+            int total = 21;
+            int placed = 10;
+            bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c => c.GetScore()).Select(a => new BlokusMove(new byte[400]) { Piece = a }).Take(placed).ToList();
+            bg.mPlayerStates[0].Pieces = PieceFactory.GetPieces().OrderBy(c => c.GetScore()).Take(total-placed).ToList();
+            int score = bg.ScoreGame(1);
+            Assert.IsTrue(score == -39);
+            placed = 20;
+            bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c => c.GetScore()).Select(a => new BlokusMove(new byte[400]) { Piece = a }).Take(placed).ToList();
+            bg.mPlayerStates[0].Pieces = PieceFactory.GetPieces().OrderBy(c => c.GetScore()).Take(total - placed).ToList();
+            score = bg.ScoreGame(1);
+            Assert.IsTrue(score == -1);
         }
 
 
@@ -108,7 +150,7 @@ namespace Blokus
             }
 
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
-            BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(7) };
+            BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(2) };
             bool result = gameValidator.CheckPiecePlacement(move, oldstate);
 
             Assert.AreEqual(true, result);
@@ -184,7 +226,7 @@ namespace Blokus
             }
             move = new BlokusMove(gamestate) { Piece = PieceFactory.GetPieces().ElementAt(3) };
 
-            isOk = validator.Validate(1, move, oldstate);
+            isOk = validator.Validate(2, move, oldstate);
             Assert.AreEqual(true, isOk);
         }
 
