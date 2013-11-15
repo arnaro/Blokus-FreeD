@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blokus
 {
-    public class BlokusGameState
+    public class BlokusGameState : IBlokusGameState
     {
         public BlokusGameState(byte[] pGameState, IList<IPiece> pPieces, int pColumns, int pRows)
         {
@@ -36,6 +36,41 @@ namespace Blokus
             mColumns = (int)Math.Sqrt(pGameState.Length);
             mRows = (int)Math.Sqrt(pGameState.Length);
         }
+
+        public IList<BlokusMove> GetAvailableMoves(int playerId)
+        {
+            IGameValidator validator = ValidatorFactory.GetValidator();
+            List<int> corners = GetCorners(playerId);
+            IList<BlokusMove> Results = new List<BlokusMove>();
+
+            foreach (IPiece piece in AvailablePieces)
+            {
+                var rotations = piece.ListRoations();
+                foreach (byte[,] rotation in rotations)
+                {
+                    foreach (int corner in corners)
+                    {
+                        IList<BlokusMove> moves = PlacePice(rotation, corner);
+                        foreach (BlokusMove move in moves)
+                        {
+                            //!TODO change validator.Validate to use move instead of GameState and dont solve the remove piece in validate
+                            if (validator.Validate(playerId, move, BlokusBoard, false))
+                            {
+                                Results.Add(move);
+                            }
+                        }
+                    }
+                }
+            }
+            return new List<BlokusMove>();
+        }
+
+        public IList<BlokusMove> PlacePice(byte[,] rotation, int corner)
+        {
+            //!TODO make list of all possible moves 
+            return new List<BlokusMove>();
+        }
+
 
         private int mColumns, mRows;
         public byte[] BlokusBoard { get; private set; }

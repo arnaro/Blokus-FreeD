@@ -8,9 +8,9 @@ namespace BlokusTestPlayer
 {
     public class BlokusTestPlayer : BlokusBasePlayer
     {
-        public override BlokusGameState PlayRound(BlokusGameState gamestate)
+        public override BlokusMove PlayRound(IBlokusGameState gamestate)
         {
-            return gamestate;
+            return new BlokusMove(gamestate.BlokusBoard);
         }
     }
 }

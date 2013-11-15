@@ -14,7 +14,7 @@ namespace Blokus
             Id = playernumber;
         }
 
-        public abstract BlokusGameState PlayRound(BlokusGameState gamestate);
+        public abstract BlokusMove PlayRound(IBlokusGameState gamestate);
     }
 
     public interface IBlokusPlayer
@@ -23,7 +23,7 @@ namespace Blokus
         int Id { get; set; }
         void Initialize(int playernumber);
 
-        BlokusGameState PlayRound(BlokusGameState gamestate);
+        BlokusMove PlayRound(IBlokusGameState gamestate);
     }
 
 }
