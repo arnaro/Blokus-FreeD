@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blokus.Model;
 
 namespace Blokus
 {
@@ -106,7 +107,7 @@ namespace Blokus
             }
 
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
-            BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(7) };
+            BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(2) };
             bool result = gameValidator.CheckPiecePlacement(move, oldstate);
 
             Assert.AreEqual(true, result);
@@ -182,7 +183,7 @@ namespace Blokus
             }
             move = new BlokusMove(gamestate) { Piece = PieceFactory.GetPieces().ElementAt(3) };
 
-            isOk = validator.Validate(1, move, oldstate);
+            isOk = validator.Validate(2, move, oldstate);
             Assert.AreEqual(true, isOk);
         }
 
