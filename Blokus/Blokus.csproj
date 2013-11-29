@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlokusGameState.cs" />
+    <Compile Include="BlokusGameStateTest.cs" />
     <Compile Include="BlokusGameTests.cs" />
     <Compile Include="PieceFactoryTest.cs" />
     <Compile Include="PieceTests.cs" />

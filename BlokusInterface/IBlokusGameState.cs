@@ -9,5 +9,6 @@ namespace Blokus
     {
         byte[] BlokusBoard { get; }
         IList<IPiece> AvailablePieces { get; }
+        IList<BlokusMove> GetAvailableMoves(int playerId);
     }
 }

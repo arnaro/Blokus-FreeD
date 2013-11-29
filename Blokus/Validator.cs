@@ -53,17 +53,7 @@ namespace Blokus
             // First piece
             if (oldState.AvailablePieces.Count == 21)
             {
-                switch (playerId)
-                {
-                    case 1:
-                        return (move.BlokusBoard[0] == playerId);
-                    case 2:
-                        return (move.BlokusBoard[19] == playerId);
-                    case 3:
-                        return (move.BlokusBoard[move.BlokusBoard.Length - 1] == playerId);
-                    case 4:
-                        return (move.BlokusBoard[move.BlokusBoard.Length - 20] == playerId);
-                }
+                return GetStartCorner(playerId, move);
             }
 
             foreach (var coord in diff)
@@ -95,6 +85,23 @@ namespace Blokus
                 }
             }
             return hasAtLeastOneCorner;
+        }
+
+        public static bool GetStartCorner(int playerId, BlokusMove move)
+        {
+            switch (playerId)
+            {
+                case 1:
+                    return (move.BlokusBoard[0] == playerId);
+                case 2:
+                    return (move.BlokusBoard[19] == playerId);
+                case 3:
+                    return (move.BlokusBoard[move.BlokusBoard.Length - 1] == playerId);
+                case 4:
+                    return (move.BlokusBoard[move.BlokusBoard.Length - 20] == playerId);
+                default:
+                    return (move.BlokusBoard[0] == playerId);
+            }
         }
 
         public bool CheckPiecePlacement(BlokusMove move, BlokusGameState oldstate)

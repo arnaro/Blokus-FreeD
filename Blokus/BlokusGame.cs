@@ -56,7 +56,7 @@ namespace Blokus
                 BlokusMove move = currentPlayerState.Player.PlayRound(playerState);
                 //BlokusGameState newState = new BlokusGameState(move.BlokusBoard, currentPlayerState.Pieces);
 
-                if (mGameValidator.Validate(currentPlayerState.Player.Id, move, playerState))
+                if (move != null && mGameValidator.Validate(currentPlayerState.Player.Id, move, playerState))
                 {
                     //removing piece from available
                     currentPlayerState.Pieces.Remove(move.Piece);

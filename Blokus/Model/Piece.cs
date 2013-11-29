@@ -72,60 +72,68 @@ namespace Blokus.Model
         public byte[,] Trim(byte[,] piece)
         {
             List<List<byte>> newList = new List<List<byte>>();
-
-            for (int x = 0; x < size; x++)
+            //If is square
+            if (piece.GetLength(0) == piece.GetLength(1))
             {
-                List<byte> row = new List<byte>();
-                bool empty = true;
-                for (int y = 0; y < size; y++)
-                {
-                    if (piece[x, y] > 0)
-                    {
-                        empty = false;
-                        break;
-                    }
-                }
-                if (!empty)
-                {
-                    for (int i = 0; i < size; i++)
-                    {
-                        row.Add(piece[x, i]);
-                    }
-                    newList.Add(row);
-                }
-            }
 
-            for (int x = size-1; x >= 0; x--)
-            {
-                bool empty = true;
-                foreach (var row in newList)
+                for (int x = 0; x < size; x++)
                 {
-                    if (row[x] > 0)
+                    List<byte> row = new List<byte>();
+                    bool empty = true;
+                    for (int y = 0; y < size; y++)
                     {
-                        empty = false;
-                        break;
+                        if (piece[x, y] > 0)
+                        {
+                            empty = false;
+                            break;
+                        }
+                    }
+                    if (!empty)
+                    {
+                        for (int i = 0; i < size; i++)
+                        {
+                            row.Add(piece[x, i]);
+                        }
+                        newList.Add(row);
                     }
                 }
-                if (empty)
+
+                for (int x = size - 1; x >= 0; x--)
                 {
+                    bool empty = true;
                     foreach (var row in newList)
                     {
-                        row.RemoveAt(x);
+                        if (row[x] > 0)
+                        {
+                            empty = false;
+                            break;
+                        }
+                    }
+                    if (empty)
+                    {
+                        foreach (var row in newList)
+                        {
+                            row.RemoveAt(x);
+                        }
                     }
                 }
-            }
 
-            //Change to byte array
-            byte[,] retArray = new byte[newList.Count,newList[0].Count];
-            for (int y = 0; y < newList[0].Count; y++)
-            {
-                for (int x = 0; x < newList.Count; x++)
+                //Change to byte array
+                byte[,] retArray = new byte[newList.Count, newList[0].Count];
+                for (int y = 0; y < newList[0].Count; y++)
                 {
-                    retArray[x, y] = newList[x][y];
+                    for (int x = 0; x < newList.Count; x++)
+                    {
+                        retArray[x, y] = newList[x][y];
+                    }
                 }
-            }
 
-            return retArray;
+                return retArray;
+            }
+            else
+            {
+                return piece;
+            }
         }
 
         public List<byte[,]> PruneForms(List<byte[,]> ListOfRotations)
@@ -145,6 +153,19 @@ namespace Blokus.Model
                 }
             }
             return ret;
+        }
+        byte[,] AirFill(byte[,] piece)
+        {
+            int max = Math.Max(piece.GetLength(0),piece.GetLength(1));
+            byte[,] newpiece = new byte[max,max];
+            for(int x = 0;x<piece.GetLength(0);x++)
+            {
+                for(int y=0;y<piece.GetLength(1);y++)
+                {
+                    newpiece[x,y] = piece[x,y];
+                }
+            }
+            return newpiece;
         }
 
         public override string ToString()
@@ -170,8 +191,11 @@ namespace Blokus.Model
             Piece pieceA = this;
             Piece pieceB = (obj as Piece);
 
-            pieceA = new Piece(pieceA.Trim(pieceA.baseForm));
-            pieceB = new Piece(pieceB.Trim(pieceB.baseForm));
+
+
+
+            pieceA = new Piece(AirFill(pieceA.Trim(pieceA.baseForm)));
+            pieceB = new Piece(AirFill(pieceB.Trim(pieceB.baseForm)));
 
             var rotationsA = pieceA.ListRoations();
             var rotationsB = pieceB.ListRoations();
@@ -186,6 +210,8 @@ namespace Blokus.Model
             }
             return false;
         }
+
+
 
         public static bool operator ==(Piece a, Piece b)
         {

@@ -41,9 +41,8 @@ namespace Blokus
 
         public IList<BlokusMove> GetAvailableMoves(int playerId)
         {
-            
             List<int> corners = GetCorners(playerId);
-            IList<BlokusMove> Results = new List<BlokusMove>();
+            IList<BlokusMove> results = new List<BlokusMove>();
 
             foreach (IPiece piece in AvailablePieces)
             {
@@ -55,12 +54,12 @@ namespace Blokus
                         IList<BlokusMove> moves = PlacePiece(rotation, corner, playerId);
                         foreach (BlokusMove move in moves)
                         {
-                            Results.Add(move);
+                            results.Add(move);
                         }
                     }
                 }
             }
-            return new List<BlokusMove>();
+            return results;
         }
 
         public IList<BlokusMove> PlacePiece(byte[,] rotation, int corner, int playerId)
@@ -141,20 +140,41 @@ namespace Blokus
         {
             List<int> availableCorners = new List<int>();
 
-            for (int i = 0; i < BlokusBoard.Length; i++)
+            if (!BlokusBoard.Any(a => a == pPlayerId))
             {
-                if (BlokusBoard[i] != pPlayerId)
+                switch (pPlayerId)
                 {
-                    continue;
+                    case 1:
+                        availableCorners.Add(0);
+                        break;
+                    case 2:
+                        availableCorners.Add(19);
+                        break;
+                    case 3:
+                        availableCorners.Add(399);
+                        break;
+                    case 4:
+                        availableCorners.Add(380);
+                        break;
                 }
+            }
+            else
+            {
+                for (int i = 0; i < BlokusBoard.Length; i++)
+                {
+                    if (BlokusBoard[i] != pPlayerId)
+                    {
+                        continue;
+                    }
 
-                int NW = i % mColumns == 0 || i < mColumns ? -1 : i - 1 - mColumns;
-                int SW = i % mColumns == 0 || i >= mColumns * mRows - mColumns ? -1 : i - 1 + mColumns;
-                int NE = i % mColumns == mColumns - 1 || i < mColumns ? -1 : i + 1 - mColumns;
-                int SE = i % mColumns == mColumns - 1 || i >= mColumns * mRows - mColumns ? -1 : i + 1 + mColumns;
-                List<int> directions = new List<int>{NW,SW,NE,SE};
+                    int NW = i % mColumns == 0 || i < mColumns ? -1 : i - 1 - mColumns;
+                    int SW = i % mColumns == 0 || i >= mColumns * mRows - mColumns ? -1 : i - 1 + mColumns;
+                    int NE = i % mColumns == mColumns - 1 || i < mColumns ? -1 : i + 1 - mColumns;
+                    int SE = i % mColumns == mColumns - 1 || i >= mColumns * mRows - mColumns ? -1 : i + 1 + mColumns;
+                    List<int> directions = new List<int> { NW, SW, NE, SE };
 
-                availableCorners.AddRange(directions.Where(a=> IsLegitCorner(a, pPlayerId)));
+                    availableCorners.AddRange(directions.Where(a => IsLegitCorner(a, pPlayerId)));
+                }
             }
             return availableCorners.Distinct().ToList();
         }
