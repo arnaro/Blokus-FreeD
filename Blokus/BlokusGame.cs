@@ -23,7 +23,7 @@ namespace Blokus
 
             //AddRandomData();
             mPlayers = pPlayers;
-            //Shuffle(mPlayers);
+
             mPlayerStates = mPlayers.Select(a => new BlokusPlayerState {Player = a, Pieces = PieceFactory.GetPieces(), PassLastTurn = false}).ToList();
         }
 
@@ -96,11 +96,11 @@ namespace Blokus
                 if (remainingPieces.Count() == 0)
                 {
                     score += 15;
-                    BlokusMove lastmove = mPlayers.Where(b => b.Id == playerId).FirstOrDefault().Moves.Last();
-                    if (lastmove.Piece.Equals(PieceFactory.GetPieces().ElementAt(0)))
-                    {
-                        score += 5;
-                    }
+                    //BlokusMove lastmove = mPlayers.Where(b => b.Id == playerId).FirstOrDefault().Moves.Last();
+                    //if (lastmove.Piece.Equals(PieceFactory.GetPieces().ElementAt(0)))
+                    //{
+                    //    score += 5;
+                    //}
                 }
             }
             return score;
@@ -110,7 +110,7 @@ namespace Blokus
         {
             var scoreList = mGameState.Where(a=> a > 0).GroupBy(a => a).Select(a => new {Id = a.Key, Score = a.Count()}).OrderByDescending(a => a.Score).ToList();
            
-            mPlayers.ForEach(a => Console.WriteLine(a.Name + " " + ScoreGame(a.Id)));
+            mPlayers.ForEach(a => Console.WriteLine(a.Name + " " + ScoreGame(a.Id)+"     "));
 
             Console.SetCursorPosition(0, Console.CursorTop - scoreList.Count);
         }
@@ -173,20 +173,6 @@ namespace Blokus
                     return ConsoleColor.Yellow;
                 default:
                     return ConsoleColor.Black;
-            }
-        }
-
-        private void Shuffle<T>(List<T> list)
-        {
-            Random rng = new Random();
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
             }
         }
     }

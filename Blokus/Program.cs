@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Blokus
@@ -11,6 +12,7 @@ namespace Blokus
     class Program
     {
         public static byte[] Board = new byte[400];
+        private static int numberOfGames = 1;
         //public byte[,] Board = new byte[20, 20];
         static void Main(string[] args)
         {
@@ -21,35 +23,80 @@ namespace Blokus
             List<IBlokusPlayer> playas = SelectPlayers(v);
 
             // Display Map
-            Console.Clear();
-            BlokusGame g = new BlokusGame(playas);
-            g.PrintGameState();
+            //Console.Clear();
+            //BlokusGame g = new BlokusGame(playas);
+            //g.PrintGameState();
 
-            char val = Console.ReadKey(true).KeyChar;
-            
-            while (val == 'n' && !g.IsGameOver())
+            //char val = Console.ReadKey(true).KeyChar;
+
+            int gameCounter = 0;
+
+            Dictionary<IBlokusPlayer, int> winCounter = new Dictionary<IBlokusPlayer, int>();
+            Dictionary<IBlokusPlayer, int> pointCounter = new Dictionary<IBlokusPlayer, int>();
+            playas.ForEach(a => { winCounter[a] = 0; pointCounter[a] = 0; });
+
+            while (gameCounter < numberOfGames)
             {
-                Console.CursorLeft = 0;
-                Console.CursorTop = 0;
-                g.NextMove();
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Clear();
+
+                ShufflePlayers(playas);
+
+
+                BlokusGame g = new BlokusGame(playas);
                 g.PrintGameState();
-                val = Console.ReadKey(true).KeyChar;
+
+                while (!g.IsGameOver())
+                {
+                    Console.CursorLeft = 0;
+                    Console.CursorTop = 0;
+                    g.NextMove();
+                    g.PrintGameState();
+                    //val = Console.ReadKey(true).KeyChar;
+                    Thread.Sleep(100);
+                }
+                g.GetWinners().ForEach(a => winCounter[a] += 1);
+                playas.ForEach(a=> pointCounter[a] += g.ScoreGame(a.Id));
+                ++gameCounter;
             }
 
-            if (!g.IsGameOver())
-            {
-                Console.WriteLine("Game terminated");
-            }
-            else
-            {
-                Console.WriteLine("Game over");
-                Console.WriteLine();
+            Console.WriteLine("Game over");
+            Console.WriteLine("                 ");
+            Console.WriteLine("                 ");
+            Console.WriteLine("                 ");
+            Console.WriteLine("                 ");
 
-                // WINNER IS!!
-                List<IBlokusPlayer> winners = g.GetWinners();
-                Console.WriteLine("WINNER(S)");
-                winners.ForEach(a=> Console.WriteLine(a.Name));
+            Console.WriteLine("WINNER(S)");
+
+            foreach (var winner in pointCounter.OrderByDescending(a => a.Value))
+            {
+                Console.WriteLine(winner.Key + "      " + winner.Value + " pts (" + winCounter[winner.Key] + ") wins");
             }
+
+            //if (!g.IsGameOver())
+            //{
+            //    Console.WriteLine("Game terminated");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Game over");
+            //    Console.WriteLine("                 ");
+            //    Console.WriteLine("                 ");
+            //    Console.WriteLine("                 ");
+            //    Console.WriteLine("                 ");
+
+            //    Console.WriteLine("WINNER(S)");
+                
+            //    foreach (var winner in pointCounter.OrderByDescending(a => a.Value))
+            //    {
+            //        Console.WriteLine(winner.Key + "      "+winner.Value+" pts ("+winCounter[winner.Key]+") wins");    
+            //    }
+
+            //    // WINNER IS!!
+            //    //List<IBlokusPlayer> winners = g.GetWinners();
+            //    //Console.WriteLine("WINNER(S)");
+            //    //winners.ForEach(a=> Console.WriteLine(a.Name+"      "));
+            //}
             Console.ReadKey();
         }
 
@@ -114,6 +161,10 @@ namespace Blokus
                         }
                     }
                 }
+                Console.CursorLeft = 0;
+                Console.Write("How many games? ");
+                string manys = Console.ReadLine();
+                numberOfGames = int.Parse(manys);
             }
 
 
@@ -133,6 +184,29 @@ namespace Blokus
             }
 
             return types;
+        }
+
+        public static void Shuffle<T>(List<T> list)
+        {
+            Random rng = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+        public static void ShufflePlayers(List<IBlokusPlayer> players )
+        {
+            Shuffle(players);
+            for (int i = 0; i < players.Count; i++)
+            {
+                players[i].Initialize(i + 1);
+            }
         }
 
     }
