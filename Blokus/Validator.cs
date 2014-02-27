@@ -64,7 +64,7 @@ namespace Blokus
 
         public bool IsCornerToCorner(int playerId, BlokusMove move, BlokusGameState oldState)
         {
-            int howManyPer = 20; //(int)Math.Sqrt(move.BlokusBoard.Length);
+            int howManyPer = (int)Math.Sqrt(move.BlokusBoard.Length);
             var diff = move.BlokusBoard.Select((a, i) => new
             {
                 X = i % howManyPer,
