@@ -11,7 +11,7 @@ namespace Blokus
         private ILog mLogger = LogManager.GetLogger(typeof(BlokusGame));
 
 
-        private int mPlayerTurnMaxTimeMs = 1000;
+        private int mPlayerTurnMaxTimeMs = 2000;
         private int mColumns = 20, mRows = 20;
         private byte[] mGameState;
         public List<IBlokusPlayer> mPlayers;
@@ -27,8 +27,7 @@ namespace Blokus
             mPlayers = pPlayers;
 
             mPlayerStates = mPlayers.Select(a => new BlokusPlayerState {Player = a, Pieces = PieceFactory.GetPieces(), PassLastTurn = false}).ToList();
-            mLogger.DebugFormat("======================== BLOKUS FreeD ==========================");
-            mLogger.DebugFormat("Starting new game. Players: {0}", string.Join(",", mPlayers.Select(a=> a.Name)));
+            mLogger.InfoFormat("Starting new game. Players: {0}", string.Join(",", mPlayers.Select(a=> a.Name)));
         }
 
         public void PlayGame()

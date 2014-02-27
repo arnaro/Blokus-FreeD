@@ -19,10 +19,12 @@ namespace Blokus
         //public byte[,] Board = new byte[20, 20];
         static void Main(string[] args)
         {
-            if (System.Diagnostics.Debugger.IsAttached)
+            sLogger.InfoFormat("======================== BLOKUS FreeD ==========================");
+            //if (System.Diagnostics.Debugger.IsAttached)
             {
+                args = new[] { "BLerminator", "BLerminator", "PentiumPlayer", "PentiumPlayer", "4" };
                 // To skip player selection, enable this
-                //args = new[] {"BLerminator", "BLerminator", "PentiumPlayer", "PentiumPlayer", "4"};
+                //args = new[] { "RandomPlayer", "RandomPlayer", "RandomPlayer", "RandomPlayer", "4" };
             }
 
 
@@ -36,9 +38,10 @@ namespace Blokus
             Dictionary<IBlokusPlayer, int> winCounter = new Dictionary<IBlokusPlayer, int>();
             Dictionary<IBlokusPlayer, int> pointCounter = new Dictionary<IBlokusPlayer, int>();
             playas.ForEach(a => { winCounter[a] = 0; pointCounter[a] = 0; });
-
+            DateTime totalTime = DateTime.Now;
             while (gameCounter < numberOfGames)
             {
+                DateTime dt = DateTime.Now;
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
 
@@ -55,12 +58,13 @@ namespace Blokus
                     g.NextMove();
                     g.PrintGameState();
                     //val = Console.ReadKey(true).KeyChar;
-                    Thread.Sleep(100);
+                    //Thread.Sleep(100);
                 }
                 g.GetWinners().ForEach(a => winCounter[a] += 1);
                 playas.ForEach(a=> pointCounter[a] += g.ScoreGame(a.Id));
                 ++gameCounter;
-                sLogger.InfoFormat("Result: {0}", string.Join("",playas.Select(a=> string.Format("{0, -30}" ,a.Name+": "+g.ScoreGame(a.Id)+"pts"))));
+                sLogger.InfoFormat("Game finished in {0}sec", (DateTime.Now - dt).TotalSeconds);
+                sLogger.InfoFormat("Result: {0}", string.Join("", playas.Select(a => string.Format("{0, -30}", a.Name + ": " + g.ScoreGame(a.Id) + "pts"))));
             }
 
             Console.WriteLine("Game over");
@@ -75,6 +79,7 @@ namespace Blokus
             {
                 Console.WriteLine(winner.Key + "      " + winner.Value + " pts (" + winCounter[winner.Key] + ") wins");
             }
+            sLogger.InfoFormat("All game finished in {0}sec", (DateTime.Now - totalTime).TotalSeconds);
 
             //if (!g.IsGameOver())
             //{

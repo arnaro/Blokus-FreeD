@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Blokus.Model;
+using log4net;
 
 namespace Blokus
 {
@@ -23,13 +25,35 @@ namespace Blokus
 
     internal class GameValidator : IGameValidator
     {
+        private static ILog sLogger = LogManager.GetLogger(typeof(BlokusGameState));
+
         public bool Validate(int playerId, BlokusMove move, BlokusGameState oldstate)
         {
-            if (IsCorrectPlayerOnEmptySpace(playerId, move, oldstate) && IsCornerToCorner(playerId, move, oldstate))
+            DateTime dt = DateTime.Now;
+            TimeSpan t3 = new TimeSpan();
+            try
             {
-                return CheckPiecePlacement(move, oldstate);
+                bool isCorrect = IsCorrectPlayerOnEmptySpace(playerId, move, oldstate);
+                bool isCorner = IsCornerToCorner(playerId, move, oldstate);
+                if (isCorrect && isCorner)
+                {
+                    DateTime d = DateTime.Now;
+                    bool checkPlacement = CheckPiecePlacement(move, oldstate);
+                    t3 = (DateTime.Now - d);
+                    return checkPlacement;
+                }
+                return false;
             }
-            return false;
+            finally
+            {
+                double d = (DateTime.Now - dt).TotalMilliseconds;
+                if (d > 4)
+                {
+                    sLogger.DebugFormat("       Finish validating: {0}ms", (DateTime.Now - dt).TotalMilliseconds);
+                    sLogger.DebugFormat("         checkPlacement: {0}ms", t3.TotalMilliseconds);
+                }
+
+            }
         }
 
         public bool IsCorrectPlayerOnEmptySpace(int playerId, BlokusMove move, BlokusGameState oldState)
@@ -40,7 +64,7 @@ namespace Blokus
 
         public bool IsCornerToCorner(int playerId, BlokusMove move, BlokusGameState oldState)
         {
-            int howManyPer = (int)Math.Sqrt(move.BlokusBoard.Length);
+            int howManyPer = 20; //(int)Math.Sqrt(move.BlokusBoard.Length);
             var diff = move.BlokusBoard.Select((a, i) => new
             {
                 X = i % howManyPer,
@@ -114,6 +138,7 @@ namespace Blokus
                     changes[i] = 1;
                 }
             }
+            
             int minx = 20;
             int maxx = 0;
             int miny = 20;
@@ -150,20 +175,32 @@ namespace Blokus
                     piece[v - miny, u - minx] = changes[v * 20 + u];
                 }
             }
+            DateTime dt = DateTime.Now;
+            bool ispiece = IsPiece(move, oldstate.AvailablePieces.ToList(), piece);
+            //sLogger.DebugFormat("               loop 4: {0}ms", (DateTime.Now - dt).TotalMilliseconds);
+            dt = DateTime.Now;
 
-            return IsPiece(move,oldstate.AvailablePieces.ToList(), new Piece(piece));
+            return ispiece;
         }
 
-        public bool IsPiece(BlokusMove move,List<IPiece> availablepieces, IPiece piece)
+        public bool IsPiece(BlokusMove move,List<IPiece> availablepieces, byte[,] arrayBytes)
         {
             //Piece declared is same as piece placed
-            if (move.Piece.Equals(piece))
+            if (move.Piece.Equals(arrayBytes))
             {
-                if (availablepieces.Contains(move.Piece))
+                foreach (var availablepiece in availablepieces)
                 {
-                    return true;
+                    if (availablepiece.Equals(arrayBytes))
+                    {
+                        return true;
+                    }
                 }
             }
+            //if (availablepieces.Contains(arrayBytes))
+            //    {
+            //        return true;
+            //    }
+            //}
             return false;
         }
 

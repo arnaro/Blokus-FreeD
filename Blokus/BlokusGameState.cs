@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Threading.Tasks;
 using Blokus.Model;
+using log4net;
 
 namespace Blokus
 {
     public class BlokusGameState : IBlokusGameState
     {
+        private static ILog sLogger = LogManager.GetLogger(typeof(BlokusGameState));
+
         public BlokusGameState(byte[] pGameState, IList<IPiece> pPieces, int pColumns, int pRows)
         {
             BlokusBoard = pGameState;
@@ -41,24 +45,39 @@ namespace Blokus
 
         public IList<BlokusMove> GetAvailableMoves(int playerId)
         {
+            DateTime dt1 = DateTime.Now;
             List<int> corners = GetCorners(playerId);
+            //sLogger.DebugFormat("Get corners: {0}ms", (DateTime.Now - dt1).TotalMilliseconds);
             IList<BlokusMove> results = new List<BlokusMove>();
 
+            //dt1 = DateTime.Now;
             foreach (IPiece piece in AvailablePieces)
+            //Parallel.ForEach(AvailablePieces, piece =>
             {
-                var rotations = piece.ListRoations();
-                foreach (byte[,] rotation in rotations)
+                DateTime dt2 = DateTime.Now;
+                var rotations = piece.Rotations;
+                //sLogger.DebugFormat("       Getting rotations: {0}ms", (DateTime.Now - dt2).TotalMilliseconds);
+                dt2 = DateTime.Now;
+                Parallel.ForEach(rotations, rotation =>
+                //foreach (byte[,] rotation in rotations)
                 {
                     foreach (int corner in corners)
                     {
                         IList<BlokusMove> moves = PlacePiece(rotation, corner, playerId);
                         foreach (BlokusMove move in moves)
                         {
-                            results.Add(move);
+                            lock (results)
+                            {
+                                results.Add(move);
+                            }
                         }
                     }
-                }
-            }
+                });
+                //sLogger.DebugFormat("       Finish all rotations: {0}ms", (DateTime.Now - dt2).TotalMilliseconds);
+
+            };
+            //sLogger.DebugFormat("Get Available pieces: {0}ms", (DateTime.Now - dt1).TotalMilliseconds);
+
             return results;
         }
 
@@ -94,8 +113,6 @@ namespace Blokus
 
             BlokusMove move = new BlokusMove(BlokusBoard);
 
-            //byte[,] board = Get2DBoard();
-
             for (int x = 0; x <= rotation.GetUpperBound(0); x++)
             {
                 for (int y = 0; y <= rotation.GetUpperBound(1); y++)
@@ -114,7 +131,7 @@ namespace Blokus
                     }
                 }
             }
-            move.Piece = new Piece(rotation);
+            move.Piece = Piece.GetPiece(rotation);// new Piece(rotation);
             return validator.Validate(playerId, move, this) ? move : null;
         }
 

@@ -9,11 +9,13 @@ namespace Blokus
 {
     class PieceFactory
     {
+        public static Dictionary<byte[,], IPiece> PieceDictionary = new Dictionary<byte[,], IPiece>();
+
         static public IList<IPiece> GetPieces()
         {
             byte c = Piece.CONNECTION_POINT_VALUE;
 
-            IList<IPiece> ListOfPieces = new List<IPiece>();
+            List<IPiece> ListOfPieces = new List<IPiece>();
 
             var baseForm = new byte[,]
                 {
@@ -167,6 +169,7 @@ namespace Blokus
                 };
             ListOfPieces.Add(new Piece(baseForm));
 
+            ListOfPieces.ForEach(a => a.Rotations.ForEach(b => PieceDictionary[b] = a));
             return ListOfPieces;
         }
     }

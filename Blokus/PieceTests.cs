@@ -18,7 +18,7 @@ namespace Blokus
             basicForm[0,0] = 1;
 
             Piece piece = new Piece(basicForm);
-            Assert.AreEqual(1,piece.ListRoations().Count);
+            Assert.AreEqual(1,piece.Rotations.Count);
 
             basicForm = new byte[2,2]
                 {
@@ -32,7 +32,7 @@ namespace Blokus
                 };
 
             piece = new Piece(basicForm);
-            Assert.AreEqual(Form2, piece.ListRoations()[1]);
+            Assert.AreEqual(Form2, piece.Rotations[1]);
 
             var bigBaseForm = new byte[4, 4]
                 {
@@ -49,7 +49,7 @@ namespace Blokus
                     {0, 1},
                 };
             piece = new Piece(bigBaseForm);
-            Assert.AreEqual(formFlip, piece.ListRoations()[4]);
+            Assert.AreEqual(formFlip, piece.Rotations[4]);
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace Blokus
 
             IPiece piece = new Piece(form);
 
-            Assert.AreEqual(2, piece.ListRoations().Count);
+            Assert.AreEqual(2, piece.Rotations.Count);
         }
 
         [Test]

@@ -7,7 +7,8 @@ namespace Blokus
 {
     public interface IPiece
     {
-        List<byte[,]> ListRoations();
+
+        List<byte[,]> Rotations { get; }
         int GetScore();
         bool Equals(object obj);
     }

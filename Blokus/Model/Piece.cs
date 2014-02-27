@@ -12,11 +12,40 @@ namespace Blokus.Model
 
         protected byte[,] baseForm;
         private int size;  //Danger! Will change after Trim
+        private List<byte[,]> mRots = null;
+
+        public static IPiece GetPiece(byte[,] matrix)
+        {
+            if (PieceFactory.PieceDictionary.ContainsKey(matrix))
+            {
+                return PieceFactory.PieceDictionary[matrix];
+            }
+            else
+            {
+                throw new ArgumentException("Unknown matix");
+            }
+        }
 
         public Piece(byte[,] matrix)
         {
+            if (matrix.GetLength(0) != matrix.GetLength(1))
+            {
+                throw new ArgumentException("Matrix must be nxn");
+            }
             baseForm = matrix;
-            size = (int) Math.Sqrt(baseForm.Length);
+            size = (int)Math.Sqrt(baseForm.Length);
+        }
+
+        public List<byte[,]> Rotations
+        {
+            get
+            {
+                if (mRots == null)
+                {
+                    mRots = ListRoations();
+                }
+                return mRots;
+            }
         }
 
         public int GetScore()
@@ -26,7 +55,7 @@ namespace Blokus.Model
              select item).Count();
         }
 
-        public List<byte[,]> ListRoations()
+        private List<byte[,]> ListRoations()
         {
             var array = new List<byte[,]>(8);
             array.Add(baseForm);
@@ -73,7 +102,8 @@ namespace Blokus.Model
         {
             List<List<byte>> newList = new List<List<byte>>();
             //If is square
-            if (piece.GetLength(0) == piece.GetLength(1))
+            int size = piece.GetLength(0);
+            if (size == piece.GetLength(1))
             {
 
                 for (int x = 0; x < size; x++)
@@ -154,19 +184,19 @@ namespace Blokus.Model
             }
             return ret;
         }
-        byte[,] AirFill(byte[,] piece)
-        {
-            int max = Math.Max(piece.GetLength(0),piece.GetLength(1));
-            byte[,] newpiece = new byte[max,max];
-            for(int x = 0;x<piece.GetLength(0);x++)
-            {
-                for(int y=0;y<piece.GetLength(1);y++)
-                {
-                    newpiece[x,y] = piece[x,y];
-                }
-            }
-            return newpiece;
-        }
+        //byte[,] AirFill(byte[,] piece)
+        //{
+        //    int max = Math.Max(piece.GetLength(0),piece.GetLength(1));
+        //    byte[,] newpiece = new byte[max,max];
+        //    for(int x = 0;x<piece.GetLength(0);x++)
+        //    {
+        //        for(int y=0;y<piece.GetLength(1);y++)
+        //        {
+        //            newpiece[x,y] = piece[x,y];
+        //        }
+        //    }
+        //    return newpiece;
+        //}
 
         public override string ToString()
         {
@@ -184,6 +214,23 @@ namespace Blokus.Model
 
         public override bool Equals(object obj)
         {
+            ByteArrayComparer byteComparer = new ByteArrayComparer();
+
+            var arrayBytes = obj as byte[,];
+            if (arrayBytes != null)
+            {
+                arrayBytes = Trim(arrayBytes);
+                // do something
+                var rotations = this.Rotations;
+                foreach (var rotation in rotations)
+                {
+                    if (byteComparer.Equals(rotation, arrayBytes))
+                    {
+                        return true;
+                    }
+                }
+            }
+
             if (!(obj is Piece))
             {
                 return false;
@@ -191,16 +238,12 @@ namespace Blokus.Model
             Piece pieceA = this;
             Piece pieceB = (obj as Piece);
 
+            //pieceA = new Piece(AirFill(pieceA.Trim(pieceA.baseForm)));
+            //pieceB = new Piece(AirFill(pieceB.Trim(pieceB.baseForm)));
 
+            var rotationsA = pieceA.Rotations;
+            var rotationsB = pieceB.Rotations;
 
-
-            pieceA = new Piece(AirFill(pieceA.Trim(pieceA.baseForm)));
-            pieceB = new Piece(AirFill(pieceB.Trim(pieceB.baseForm)));
-
-            var rotationsA = pieceA.ListRoations();
-            var rotationsB = pieceB.ListRoations();
-
-            ByteArrayComparer byteComparer = new ByteArrayComparer();
             foreach (var rotation in rotationsA)
             {
                 if (byteComparer.Equals(rotation, rotationsB[0]))
