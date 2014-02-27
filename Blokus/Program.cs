@@ -6,28 +6,30 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
+using log4net.Appender;
 
 namespace Blokus
 {
     class Program
     {
+        private static ILog sLogger = LogManager.GetLogger(typeof(Program));
         public static byte[] Board = new byte[400];
         private static int numberOfGames = 1;
         //public byte[,] Board = new byte[20, 20];
         static void Main(string[] args)
         {
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                // To skip player selection, enable this
+                //args = new[] {"BLerminator", "BLerminator", "PentiumPlayer", "PentiumPlayer", "4"};
+            }
+
 
             // Get some players from dll
             Console.ResetColor();
             var v = GetPlayersFromDll();
-            List<IBlokusPlayer> playas = SelectPlayers(v);
-
-            // Display Map
-            //Console.Clear();
-            //BlokusGame g = new BlokusGame(playas);
-            //g.PrintGameState();
-
-            //char val = Console.ReadKey(true).KeyChar;
+            List<IBlokusPlayer> playas = SelectPlayers(v, args);
 
             int gameCounter = 0;
 
@@ -58,6 +60,7 @@ namespace Blokus
                 g.GetWinners().ForEach(a => winCounter[a] += 1);
                 playas.ForEach(a=> pointCounter[a] += g.ScoreGame(a.Id));
                 ++gameCounter;
+                sLogger.InfoFormat("Result: {0}", string.Join("",playas.Select(a=> string.Format("{0, -30}" ,a.Name+": "+g.ScoreGame(a.Id)+"pts"))));
             }
 
             Console.WriteLine("Game over");
@@ -100,7 +103,7 @@ namespace Blokus
             Console.ReadKey();
         }
 
-        public static List<IBlokusPlayer> SelectPlayers(List<Type> types)
+        public static List<IBlokusPlayer> SelectPlayers(List<Type> types, string[] args)
         {
             string indent = " ";
             List<IBlokusPlayer> players = new List<IBlokusPlayer>();
@@ -111,9 +114,19 @@ namespace Blokus
             else
             {
                 char pressed = '_';
-                while (pressed != 'd' && pressed != 'D')
+                while (players.Count < 4 && pressed != 'd' && pressed != 'D')
                 {
-                    int nextId = 1;
+                    int nextId = players.Count + 1;
+                    int count = players.Count;
+                    if (args.Length > count)
+                    {
+                        IBlokusPlayer p = (IBlokusPlayer)Activator.CreateInstance(types.Single(a=> a.Name == args[count]));
+                        p.Name = args[count] + " " + nextId;
+                        p.Initialize(nextId);
+                        players.Add(p);
+                        continue;
+                    }
+
                     Console.Clear();
                     Console.WriteLine(" ===== Blokus player selection ===== ");
 
@@ -129,7 +142,6 @@ namespace Blokus
                             Console.WriteLine(indent + string.Format("{0}. {1}", players[i - 1].Id, players[i - 1].Name));
                         }
 
-                        nextId = players.Count + 1;
                     }
                     Console.WriteLine("Select new player or 'D' when done");
                     for (int i = 1; i <= types.Count; i++)
@@ -162,9 +174,13 @@ namespace Blokus
                     }
                 }
                 Console.CursorLeft = 0;
-                Console.Write("How many games? ");
-                string manys = Console.ReadLine();
-                numberOfGames = int.Parse(manys);
+
+                if (args.Length < 5 || !int.TryParse(args[4], out numberOfGames))
+                {
+                    Console.Write("How many games? ");
+                    string manys = Console.ReadLine();
+                    int.TryParse(manys, out numberOfGames);
+                }
             }
 
 

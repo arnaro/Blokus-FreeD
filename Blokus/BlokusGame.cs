@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Blokus.Model;
+using System.Threading;
+using log4net;
 
 namespace Blokus
 {
-
     public class BlokusGame
     {
+        private ILog mLogger = LogManager.GetLogger(typeof(BlokusGame));
+
+
+        private int mPlayerTurnMaxTimeMs = 1000;
         private int mColumns = 20, mRows = 20;
         private byte[] mGameState;
         public List<IBlokusPlayer> mPlayers;
@@ -25,6 +27,8 @@ namespace Blokus
             mPlayers = pPlayers;
 
             mPlayerStates = mPlayers.Select(a => new BlokusPlayerState {Player = a, Pieces = PieceFactory.GetPieces(), PassLastTurn = false}).ToList();
+            mLogger.DebugFormat("======================== BLOKUS FreeD ==========================");
+            mLogger.DebugFormat("Starting new game. Players: {0}", string.Join(",", mPlayers.Select(a=> a.Name)));
         }
 
         public void PlayGame()
@@ -47,28 +51,53 @@ namespace Blokus
         public void NextMove()
         {
             mCurrentPlayerIndex = (mCurrentPlayerIndex + 1) % mPlayerStates.Count;
-
             BlokusPlayerState currentPlayerState = mPlayerStates[mCurrentPlayerIndex];
+            DateTime dt = DateTime.Now;
             if (!currentPlayerState.PassLastTurn)
             {
-                // Time limit? 2 sec
-                BlokusGameState playerState = new BlokusGameState(mGameState, new List<IPiece>(currentPlayerState.Pieces));
-                BlokusMove move = currentPlayerState.Player.PlayRound(playerState);
-                //BlokusGameState newState = new BlokusGameState(move.BlokusBoard, currentPlayerState.Pieces);
-
-                if (move != null && mGameValidator.Validate(currentPlayerState.Player.Id, move, playerState))
+                try
                 {
-                    //removing piece from available
-                    currentPlayerState.Pieces.Remove(move.Piece);
-                    //saving state
-                    mGameState = move.BlokusBoard;
-
-                }
-                //validate failed setting player's move as passed
-                else
-                {
+                    // Assuming player will fail.
                     currentPlayerState.PassLastTurn = true;
+                    BlokusGameState playerState = new BlokusGameState(mGameState, new List<IPiece>(currentPlayerState.Pieces));
+                    BlokusMove move = null;
+                    Thread playerMove = new Thread(() => 
+                        {
+                            move = currentPlayerState.Player.PlayRound(playerState);
+                        }
+                    );
+                    playerMove.Start();
+                    bool success = playerMove.Join(TimeSpan.FromMilliseconds(mPlayerTurnMaxTimeMs));
+                    bool madeMove = move != null;
+                    bool validMove = madeMove && mGameValidator.Validate(currentPlayerState.Player.Id, move, playerState);
+                    if (success && move != null && validMove)
+                    {
+                        //removing piece from available
+                        currentPlayerState.Pieces.Remove(move.Piece);
+                        //saving state
+                        mGameState = move.BlokusBoard;
+                        //player no fail!
+                        currentPlayerState.PassLastTurn = false;
+
+                    }
+                    else if (!success)
+                    {
+                        mLogger.DebugFormat("{0} failed to make a move within the allowed time period ({1}ms). Will not be allowed to make more moves.", currentPlayerState.Player.Name, mPlayerTurnMaxTimeMs);
+                    }
+                    else if (!madeMove)
+                    {
+                        mLogger.DebugFormat("{0} passed.", currentPlayerState.Player.Name);
+                    }
+                    else if (!validMove)
+                    {
+                        mLogger.DebugFormat("{0} attempted to make an invlaid move. Will not be allowed to make more moves.", currentPlayerState.Player.Name);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    mLogger.Error(string.Format("Error in {0}", currentPlayerState.Player.Name), ex);
+                }
+                mLogger.DebugFormat("{0, -20} finished turn in {1}ms", currentPlayerState.Player.Name, (DateTime.Now - dt).TotalMilliseconds);
             }
         }
 
