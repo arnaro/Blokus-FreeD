@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Blokus.Model;
 using NUnit.Framework;
 
@@ -124,7 +120,7 @@ namespace Blokus
 
             piece = Piece.Trim(bigBaseForm);
             Assert.AreEqual(expectedArray, piece);
-            
+
             bigBaseForm = new byte[4, 4]
                 {
                     {1, 0, 0, 0},
@@ -143,7 +139,7 @@ namespace Blokus
 
             piece = Piece.Trim(bigBaseForm);
             Assert.AreEqual(expectedArray, piece);
-            
+
             bigBaseForm = new byte[4, 4]
                 {
                     {0, 0, 0, 1},

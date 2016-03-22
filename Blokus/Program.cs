@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using log4net;
-using log4net.Appender;
 
 namespace Blokus
 {
@@ -94,10 +90,10 @@ namespace Blokus
             //    Console.WriteLine("                 ");
 
             //    Console.WriteLine("WINNER(S)");
-                
+
             //    foreach (var winner in pointCounter.OrderByDescending(a => a.Value))
             //    {
-            //        Console.WriteLine(winner.Key + "      "+winner.Value+" pts ("+winCounter[winner.Key]+") wins");    
+            //        Console.WriteLine(winner.Key + "      "+winner.Value+" pts ("+winCounter[winner.Key]+") wins");
             //    }
 
             //    // WINNER IS!!

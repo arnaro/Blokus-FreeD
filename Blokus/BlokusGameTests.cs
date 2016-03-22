@@ -1,12 +1,8 @@
 ﻿using System.Drawing;
 using Blokus.Model;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Blokus.Model;
 
 namespace Blokus
 {
@@ -155,7 +151,7 @@ namespace Blokus
 
             Assert.AreEqual(true, result);
         }
-        
+
         [Test]
         public void TestPlayerHacking()
         {
@@ -543,7 +539,7 @@ namespace Blokus
             piece2[0, 0] = 9;
             piece2[1, 0] = 1;
             piece2[2, 0] = 9;
-                 
+
             piece2[0, 1] = 9;
             piece2[1, 1] = 0;
             piece2[2, 1] = 0;

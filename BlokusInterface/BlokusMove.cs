@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Blokus
+﻿namespace Blokus
 {
     public class BlokusMove
     {
@@ -15,7 +10,7 @@ namespace Blokus
 
         private BlokusMove()
         {
-            
+
         }
 
         public byte[] BlokusBoard { get; private set; }

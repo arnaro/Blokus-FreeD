@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using Blokus.Model;
 using log4net;
 
 namespace Blokus
@@ -138,7 +134,7 @@ namespace Blokus
                     changes[i] = 1;
                 }
             }
-            
+
             int minx = 20;
             int maxx = 0;
             int miny = 20;

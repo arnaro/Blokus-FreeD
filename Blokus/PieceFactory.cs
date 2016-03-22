@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Blokus.Model;
 
 namespace Blokus
@@ -156,7 +152,7 @@ namespace Blokus
                     {c,1,1,c},
                     {0,0,c,0},
                     {0,0,0,0}
-                    
+
                 };
             ListOfPieces.Add(new Piece(baseForm));
             baseForm = new byte[,]
@@ -165,7 +161,7 @@ namespace Blokus
                     {c,1,c,0},
                     {0,0,c,c},
                     {0,0,0,0}
-                    
+
                 };
             ListOfPieces.Add(new Piece(baseForm));
 

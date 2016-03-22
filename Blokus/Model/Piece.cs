@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Blokus.Model
 {
@@ -266,6 +265,11 @@ namespace Blokus.Model
             return !(a == b);
         }
 
+        public override int GetHashCode()
+        {
+            return baseForm.GetHashCode();
+        }
+
         public class ByteArrayComparer : IEqualityComparer<byte[,]>
         {
             public bool Equals(byte[,] x, byte[,] y)
@@ -275,7 +279,7 @@ namespace Blokus.Model
                 if (x.Length != y.Length) return false;
                 if (x.GetLength(1) != y.GetLength(1)) return false;
                 if (x.GetLength(0) != y.GetLength(0)) return false;
-                
+
                 for (int i = 0; i < x.GetLength(1); i++)
                 {
                     for (int j = 0; j < x.GetLength(0); j++)
