@@ -18,9 +18,9 @@ namespace Blokus
             sLogger.InfoFormat("======================== BLOKUS FreeD ==========================");
             //if (System.Diagnostics.Debugger.IsAttached)
             {
-                args = new[] { "BLerminator", "BLerminator", "PentiumPlayer", "PentiumPlayer", "4" };
+                // args = new[] { "BLerminator", "BLerminator", "PentiumPlayer", "PentiumPlayer", "4" };
                 // To skip player selection, enable this
-                //args = new[] { "RandomPlayer", "RandomPlayer", "RandomPlayer", "RandomPlayer", "4" };
+                args = new[] { "RandomPlayer", "RandomPlayer", "RandomPlayer", "RandomPlayer", "4" };
             }
 
 

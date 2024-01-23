@@ -12,7 +12,7 @@ namespace Blokus
         {
             byte[]  board = new byte[20 * 20];
             BlokusGameState playerState = new BlokusGameState(board, new List<IPiece>(PieceFactory.GetPieces()));
-            Assert.AreEqual(58, playerState.GetAvailableMoves(1).Count());
+            Assert.That(playerState.GetAvailableMoves(1).Count(), Is.EqualTo(58));
         }
     }
 }

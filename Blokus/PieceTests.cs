@@ -14,8 +14,8 @@ namespace Blokus
             basicForm[0,0] = 1;
 
             Piece piece = new Piece(basicForm);
-            Assert.AreEqual(1,piece.Rotations.Count);
-
+            Assert.That(piece.Rotations.Count, Is.EqualTo(1));
+            
             basicForm = new byte[2,2]
                 {
                     {1, 1},
@@ -28,8 +28,8 @@ namespace Blokus
                 };
 
             piece = new Piece(basicForm);
-            Assert.AreEqual(Form2, piece.Rotations[1]);
-
+            Assert.That(piece.Rotations[1], Is.EqualTo(Form2));
+            
             var bigBaseForm = new byte[4, 4]
                 {
                     {0, 0, 1, 0},
@@ -45,7 +45,7 @@ namespace Blokus
                     {0, 1},
                 };
             piece = new Piece(bigBaseForm);
-            Assert.AreEqual(formFlip, piece.Rotations[4]);
+            Assert.That(piece.Rotations[4], Is.EqualTo(formFlip));
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Blokus
             IPiece Piece = new Piece(bigBaseForm);
 
             string formString = "  X " + Environment.NewLine + " XX " + Environment.NewLine + " X  " + Environment.NewLine + " X  " + Environment.NewLine;
-            Assert.AreEqual(formString, Piece.ToString());
+            Assert.That(Piece.ToString(), Is.EqualTo(formString));
         }
 
 
@@ -85,7 +85,7 @@ namespace Blokus
                 };
 
             var piece = Piece.Trim(bigBaseForm);
-            Assert.AreEqual(expectedArray, piece);
+            Assert.That(piece, Is.EqualTo(expectedArray));
 
             bigBaseForm = new byte[4, 4]
                 {
@@ -102,7 +102,7 @@ namespace Blokus
                 };
 
             piece = Piece.Trim(bigBaseForm);
-            Assert.AreEqual(expectedArray, piece);
+            Assert.That(piece, Is.EqualTo(expectedArray));
 
             bigBaseForm = new byte[4, 4]
                 {
@@ -119,7 +119,7 @@ namespace Blokus
                 };
 
             piece = Piece.Trim(bigBaseForm);
-            Assert.AreEqual(expectedArray, piece);
+            Assert.That(piece, Is.EqualTo(expectedArray));
 
             bigBaseForm = new byte[4, 4]
                 {
@@ -138,7 +138,7 @@ namespace Blokus
                 };
 
             piece = Piece.Trim(bigBaseForm);
-            Assert.AreEqual(expectedArray, piece);
+            Assert.That(piece, Is.EqualTo(expectedArray));
 
             bigBaseForm = new byte[4, 4]
                 {
@@ -157,7 +157,7 @@ namespace Blokus
                 };
 
             piece = Piece.Trim(bigBaseForm);
-            Assert.AreEqual(expectedArray, piece);
+            Assert.That(piece, Is.EqualTo(expectedArray));
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace Blokus
 
             IPiece piece = new Piece(form);
 
-            Assert.AreEqual(2, piece.Rotations.Count);
+            Assert.That(piece.Rotations.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -190,7 +190,7 @@ namespace Blokus
             IPiece pieceA = new Piece(form);
             IPiece pieceB = new Piece(form);
 
-            Assert.IsTrue(pieceA.Equals(pieceB));
+            Assert.That(pieceA.Equals(pieceB), Is.True);
 
             form = new byte[4, 4]
                 {
@@ -201,7 +201,7 @@ namespace Blokus
                 };
             IPiece pieceC = new Piece(form);
 
-            Assert.IsFalse(pieceA.Equals(pieceC));
+            Assert.That(pieceA.Equals(pieceC), Is.False);
 
             form = new byte[4, 4]
                 {
@@ -212,7 +212,8 @@ namespace Blokus
                 };
             IPiece pieceD = new Piece(form);
 
-            Assert.IsTrue(pieceA.Equals(pieceD));
+            Assert.That(pieceA.Equals(pieceD), Is.True);
         }
     }
+
 }

@@ -33,20 +33,20 @@ namespace Blokus
             BlokusGameState newstate = new BlokusGameState(gamestate, PieceFactory.GetPieces());
 
             bg.PlayGame();
-            Assert.IsTrue(bg.IsGameOver());
+            Assert.That(bg.IsGameOver(), Is.True);
         }
 
         [Test]
         public void ScoreGameNoMoves()
         {
             int score = bg.ScoreGame(1);
-            Assert.IsTrue(score == -89);
+            Assert.That(score, Is.EqualTo(-89));
             score = bg.ScoreGame(2);
-            Assert.IsTrue(score == -89);
+            Assert.That(score, Is.EqualTo(-89));
             score = bg.ScoreGame(3);
-            Assert.IsTrue(score == -89);
+            Assert.That(score, Is.EqualTo(-89));
             score = bg.ScoreGame(4);
-            Assert.IsTrue(score == -89);
+            Assert.That(score, Is.EqualTo(-89));
         }
 
         [Test]
@@ -55,10 +55,10 @@ namespace Blokus
             bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c=>c.GetScore()).Select(a=> new BlokusMove(new byte[400]){Piece = a}).ToList();
             bg.mPlayerStates[0].Pieces = new List<IPiece>();
             int score = bg.ScoreGame(1);
-            Assert.IsTrue(score == 20);
+            Assert.That(score, Is.EqualTo(20));
             bg.mPlayers[0].Moves = bg.mPlayers[0].Moves.OrderBy(c => c.Piece.GetScore()).ToList();
             score = bg.ScoreGame(1);
-            Assert.IsTrue(score == 15);
+            Assert.That(score, Is.EqualTo(15));
         }
 
         [Test]
@@ -69,12 +69,12 @@ namespace Blokus
             bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c => c.GetScore()).Select(a => new BlokusMove(new byte[400]) { Piece = a }).Take(placed).ToList();
             bg.mPlayerStates[0].Pieces = PieceFactory.GetPieces().OrderBy(c => c.GetScore()).Take(total-placed).ToList();
             int score = bg.ScoreGame(1);
-            Assert.IsTrue(score == -39);
+            Assert.That(score, Is.EqualTo(-39));
             placed = 20;
             bg.mPlayers[0].Moves = PieceFactory.GetPieces().OrderByDescending(c => c.GetScore()).Select(a => new BlokusMove(new byte[400]) { Piece = a }).Take(placed).ToList();
             bg.mPlayerStates[0].Pieces = PieceFactory.GetPieces().OrderBy(c => c.GetScore()).Take(total - placed).ToList();
             score = bg.ScoreGame(1);
-            Assert.IsTrue(score == -1);
+            Assert.That(score, Is.EqualTo(-1));
         }
 
 
@@ -93,7 +93,7 @@ namespace Blokus
             BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(5) };
             bool result = gameValidator.CheckPiecePlacement(move, oldstate);
 
-            Assert.AreEqual(true, result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace Blokus
             BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(5) };
             bool result = gameValidator.CheckPiecePlacement(move,oldstate);
 
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.False);
         }
         [Test]
         public void SinglePieceAvailable()
@@ -130,7 +130,7 @@ namespace Blokus
             BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(0) };
             bool result = gameValidator.CheckPiecePlacement(move, oldstate);
 
-            Assert.AreEqual(true, result);
+            Assert.That(result, Is.True);
         }
         [Test]
         public void MultiRowPieceAvailable()
@@ -149,7 +149,7 @@ namespace Blokus
             BlokusMove move = new BlokusMove(newstate.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(2) };
             bool result = gameValidator.CheckPiecePlacement(move, oldstate);
 
-            Assert.AreEqual(true, result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -193,7 +193,7 @@ namespace Blokus
             BlokusMove move = new BlokusMove(gamestate) {Piece = PieceFactory.GetPieces().ElementAt(3)};
 
             bool isOk = validator.Validate(1, move, oldstate);
-            Assert.AreEqual(true, isOk);
+            Assert.That(isOk, Is.True);
         }
         [Test]
         public void TestFirstPieceWrongPlace()
@@ -213,7 +213,7 @@ namespace Blokus
             BlokusMove move = new BlokusMove(gamestate) { Piece = PieceFactory.GetPieces().ElementAt(3) };
 
             bool isOk = validator.Validate(1, move, oldstate);
-            Assert.AreEqual(false, isOk);
+            Assert.That(isOk, Is.False);
 
             // Change to player2... who should work
             for (int i = 17; i < 20; i++)
@@ -223,7 +223,7 @@ namespace Blokus
             move = new BlokusMove(gamestate) { Piece = PieceFactory.GetPieces().ElementAt(3) };
 
             isOk = validator.Validate(2, move, oldstate);
-            Assert.AreEqual(true, isOk);
+            Assert.That(isOk, Is.True);
         }
 
         [Test,Ignore("Fails, Need to handle no changes in code")]
@@ -240,7 +240,7 @@ namespace Blokus
 
             bool result = gameValidator.CheckPiecePlacement(move, oldstate);
 
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.False);
         }
 
 
@@ -256,7 +256,7 @@ namespace Blokus
 
 
             bool isOnTop = gameValidator.IsCorrectPlayerOnEmptySpace(1, move, oldState);
-            Assert.AreEqual(true, isOnTop);
+            Assert.That(isOnTop, Is.True);
         }
 
         [Test]
@@ -270,7 +270,7 @@ namespace Blokus
 
 
             bool isOnTop = gameValidator.IsCorrectPlayerOnEmptySpace(1, move, oldState);
-            Assert.AreEqual(false, isOnTop);
+            Assert.That(isOnTop, Is.False);
         }
 
         [Test]
@@ -283,7 +283,7 @@ namespace Blokus
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
 
             bool isOnTop = gameValidator.IsCorrectPlayerOnEmptySpace(1, move, oldState);
-            Assert.AreEqual(true, isOnTop);
+            Assert.That(isOnTop, Is.True);
         }
 
         [Test]
@@ -295,17 +295,17 @@ namespace Blokus
             BlokusGameState newState = new BlokusGameState(new byte[] { 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool isOnTop = gameValidator.IsCorrectPlayerOnEmptySpace(1, move, oldState);
-            Assert.AreEqual(false, isOnTop);
+            Assert.That(isOnTop, Is.False);
         }
 
         [Test]
         public void TestScore()
         {
             BlokusGameState state = new BlokusGameState(new byte[] {2, 2, 2, 1, 2, 0, 0, 0, 0, 3, 0, 0, 1, 1, 0, 0});
-            Assert.AreEqual(3, bg.GetScore(1, state));
-            Assert.AreEqual(4, bg.GetScore(2, state));
-            Assert.AreEqual(1, bg.GetScore(3, state));
-            Assert.AreEqual(0, bg.GetScore(4, state));
+            Assert.That(bg.GetScore(1, state), Is.EqualTo(3));
+            Assert.That(bg.GetScore(2, state), Is.EqualTo(4));
+            Assert.That(bg.GetScore(3, state), Is.EqualTo(1));
+            Assert.That(bg.GetScore(4, state), Is.EqualTo(0));
         }
 
         public void CornerToCornerSimple()
@@ -316,7 +316,7 @@ namespace Blokus
             BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,   1, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0, 0 });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(true, corner);
+            Assert.That(corner, Is.True);;
         }
 
         [Test]
@@ -328,7 +328,7 @@ namespace Blokus
             BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 1 });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(false, corner);
+            Assert.That(corner, Is.False);
         }
 
         [Test]
@@ -340,7 +340,7 @@ namespace Blokus
             BlokusGameState newState = new BlokusGameState(new byte[] { 0, 1, 0, 0,  0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(false, corner);
+            Assert.That(corner, Is.False);
         }
         [Test]
         public void CornerToCornerComplex()
@@ -351,7 +351,7 @@ namespace Blokus
             BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0,  0, 0, 1, 0,  0, 1, 0, 1,  0, 1, 1, 1 });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(true, corner);
+            Assert.That(corner, Is.True);
         }
 
         [Test]
@@ -363,7 +363,7 @@ namespace Blokus
             BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1 });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(false, corner);
+            Assert.That(corner, Is.False);
         }
 
         [Test]
@@ -375,7 +375,7 @@ namespace Blokus
             BlokusGameState newState = new BlokusGameState(new byte[] { 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0 });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(false, corner);
+            Assert.That(corner, Is.False);
         }
 
         [Test]
@@ -399,7 +399,7 @@ namespace Blokus
             });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(true, corner);
+            Assert.That(corner, Is.True);;
         }
 
 
@@ -424,7 +424,7 @@ namespace Blokus
             });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(false, corner);
+            Assert.That(corner, Is.False);
         }
 
         [Test]
@@ -448,7 +448,7 @@ namespace Blokus
             });
             BlokusMove move = new BlokusMove(newState.BlokusBoard) { Piece = PieceFactory.GetPieces().ElementAt(3) };
             bool corner = gameValidator.IsCornerToCorner(1, move, oldState);
-            Assert.AreEqual(false, corner);
+            Assert.That(corner, Is.False);
         }
 
         [Test]
@@ -463,7 +463,7 @@ namespace Blokus
                 } );
 
             List<int> expectedCorners = new List<int>{8,10};
-            Assert.AreEqual(expectedCorners, state.GetCorners(1));
+            Assert.That(state.GetCorners(1), Is.EqualTo(expectedCorners));
 
             //-------
              state = new BlokusGameState(new byte[]
@@ -477,7 +477,7 @@ namespace Blokus
                 } );
 
             expectedCorners = new List<int>{15,27};
-            Assert.AreEqual(expectedCorners, state.GetCorners(1));
+            Assert.That(state.GetCorners(1), Is.EqualTo(expectedCorners));
 
             //-------
             state = new BlokusGameState(new byte[]
@@ -492,8 +492,8 @@ namespace Blokus
 
             var expectedCorners1 = new List<int>{9, 21, 18};
             var expectedCorners2 = new List<int>{8, 11, 20, 26};
-            Assert.IsTrue(expectedCorners1.All(a => state.GetCorners(1).Contains(a)));
-            Assert.IsTrue(expectedCorners2.All(a => state.GetCorners(2).Contains(a)));
+            Assert.That(expectedCorners1.All(a => state.GetCorners(1).Contains(a)), Is.True);
+            Assert.That(expectedCorners2.All(a => state.GetCorners(2).Contains(a)), Is.True);
         }
 
         [Test]
@@ -531,7 +531,7 @@ namespace Blokus
             gameBoard.AvailablePieces.Add(new Piece(piece));
 
             BlokusMove move = gameBoard.TryPlacePieceOnCorner(piece, new Point(0, 3), new Point(0, 0), 1);
-            Assert.AreEqual(1,move.BlokusBoard[60]);
+            Assert.That(move.BlokusBoard[60], Is.EqualTo(1));
 
 
             gameBoard = new BlokusGameState(originalBoard);
@@ -548,13 +548,9 @@ namespace Blokus
 
             move = gameBoard.TryPlacePieceOnCorner(piece2, new Point(2, 1), new Point(0, 1), 2);
 
-            Assert.AreEqual(2, move.BlokusBoard[2]);
-            Assert.AreEqual(2, move.BlokusBoard[3]);
-            Assert.AreEqual(2, move.BlokusBoard[4]);
-
-
-
-
+            Assert.That(move.BlokusBoard[2], Is.EqualTo(2));
+            Assert.That(move.BlokusBoard[3], Is.EqualTo(2));
+            Assert.That(move.BlokusBoard[4], Is.EqualTo(2));
         }
     }
 

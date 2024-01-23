@@ -13,13 +13,13 @@ namespace Blokus
 
             var test = solution(input);
             var test1 = solution("asdsa");
-            Assert.AreEqual(3,extreme(new[]{9, 4, -3, -10}));
+            Assert.That(extreme(new[]{9, 4, -3, -10}), Is.EqualTo(3));
             //Assert.AreEqual(4, adjacency(new[] { 1, 0,0,0,1 }));
-            Assert.AreEqual(4, adjacency(new[] { 1, 1, 0, 1, 0, 0 }));
+            Assert.That(adjacency(new[] { 1, 1, 0, 1, 0, 0 }), Is.EqualTo(4));
 
-            Assert.AreEqual(21, PieceFactory.GetPieces().Count);
+            Assert.That(PieceFactory.GetPieces().Count, Is.EqualTo(21));
             string formString = "XXX" + Environment.NewLine + "  X" + Environment.NewLine + "   " + Environment.NewLine;
-            Assert.AreEqual(formString, PieceFactory.GetPieces()[7].ToString());
+            Assert.That(PieceFactory.GetPieces()[7].ToString(), Is.EqualTo(formString));
         }
 
         public int adjacency(int[] A)

@@ -1,87 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{02BB5EA7-44D8-4EDE-9F29-A97CDCED39F2}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Blokus</RootNamespace>
-    <AssemblyName>Blokus</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>.\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="NUnit" Version="4.0.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="BlokusGameState.cs" />
-    <Compile Include="BlokusGameStateTest.cs" />
-    <Compile Include="BlokusGameTests.cs" />
-    <Compile Include="PieceFactoryTest.cs" />
-    <Compile Include="PieceTests.cs" />
-    <Compile Include="Model\Piece.cs" />
-    <Compile Include="BlokusGame.cs" />
-    <Compile Include="PieceFactory.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validator.cs" />
+    <ProjectReference Include="..\BlokusInterface\BlokusInterface.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <Compile Remove="BlokusTestPlayer.cs" />
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\BlokusInterface\BlokusInterface.csproj">
-      <Project>{491d7435-2c8d-4e15-b94a-1b34d09913a1}</Project>
-      <Name>BlokusInterface</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy  "$(ProjectDir)..\BlokusTestPlayer\bin\Debug\BlokusTestPlayer.dll"   "$(TargetDir)" /Y
-xcopy  "$(ProjectDir)..\RandomPlayer\bin\Debug\RandomPlayer.dll"   "$(TargetDir)" /Y</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <!-- build from SolutionFolder with "dotnet build RandomPlayer -v:quiet && dotnet build BlokusTestPlayer -v:quiet" -->
+    <Copy SourceFiles="$(ProjectDir)../BlokusTestPlayer/bin/Debug/net8.0/BlokusTestPlayer.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="$(ProjectDir)../RandomPlayer/bin/Debug/net8.0/RandomPlayer.dll" DestinationFolder="$(TargetDir)" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
